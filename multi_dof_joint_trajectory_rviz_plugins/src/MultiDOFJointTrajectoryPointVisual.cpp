@@ -9,6 +9,11 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
     Ogre::SceneManager* scene_manager,
     Ogre::SceneNode* parent_node,
     const trajectory_msgs::MultiDOFJointTrajectoryPoint& msg,
+    bool show_transform_rotation,
+    bool show_velocity_linear,
+    bool show_velocity_angular,
+    bool show_acceleration_linear,
+    bool show_acceleration_angular,
     float size_transform_rotation,
     float diameter_arrows,
     float scale_velocity_linear,
@@ -25,13 +30,18 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
     bool show_text)
 : scene_manager_(scene_manager),
   axis_radius_per_size_(0.1),
+  show_transform_rotation_(show_transform_rotation),
+  show_velocity_linear_(show_velocity_linear),
+  show_velocity_angular_(show_velocity_angular),
+  show_acceleration_linear_(show_acceleration_linear),
+  show_acceleration_angular_(show_acceleration_angular),
   size_transform_rotation_(size_transform_rotation),
   diameter_arrows_(diameter_arrows),
-  alpha_transform_rotatation_(alpha_transform_rotatation),
   scale_velocity_linear_(scale_velocity_linear),
   scale_velocity_angular_(scale_velocity_angular),
   scale_acceleration_linear_(scale_acceleration_linear),
   scale_acceleration_angular_(scale_acceleration_angular),
+  alpha_transform_rotatation_(alpha_transform_rotatation),
   color_velocity_linear_(color_velocity_linear),
   color_velocity_angular_(color_velocity_angular),
   color_acceleration_linear_(color_acceleration_linear),
@@ -59,16 +69,6 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
     const Ogre::Quaternion orientation(msg.transforms[i].rotation.w, msg.transforms[i].rotation.x, msg.transforms[i].rotation.y, msg.transforms[i].rotation.z);
     transforms_rotation_.push_back(boost::shared_ptr<rviz::Axes>(new rviz::Axes(scene_manager_, transforms_position_.back(), size_transform_rotation, axis_radius_per_size_*size_transform_rotation)));
     transforms_rotation_.back()->setOrientation(orientation);
-    Ogre::ColourValue color;
-    color = transforms_rotation_[i]->getDefaultXColor();
-    color.a = alpha_transform_rotatation_;
-    transforms_rotation_.back()->setXColor(color);
-    color = transforms_rotation_[i]->getDefaultYColor();
-    color.a = alpha_transform_rotatation_;
-    transforms_rotation_.back()->setYColor(color);
-    color = transforms_rotation_[i]->getDefaultZColor();
-    color.a = alpha_transform_rotatation_;
-    transforms_rotation_.back()->setZColor(color);
 
     // define common variables
     Ogre::Vector3 vector;
@@ -86,7 +86,6 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
           0.2*scale_velocity_linear_*velocities_linear_absolute_.back(),
           2.0*diameter_arrows_)));
       velocities_linear_.back()->setDirection(vector);
-      velocities_linear_.back()->setColor(color_velocity_linear_);
 
       // velocity angular
       vector = Ogre::Vector3(msg.velocities[i].angular.x, msg.velocities[i].angular.y, msg.velocities[i].angular.z);
@@ -99,7 +98,6 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
           0.2*scale_velocity_angular_*velocities_angular_absolute_.back(),
           2.0*diameter_arrows_)));
       velocities_angular_.back()->setDirection(vector);
-      velocities_angular_.back()->setColor(color_velocity_angular_);
     }
 
     if (message_contains_accelerations)
@@ -115,7 +113,6 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
           0.2*scale_acceleration_linear_*accelerations_linear_absolute_.back(),
           2.0*diameter_arrows_)));
       accelerations_linear_.back()->setDirection(vector);
-      accelerations_linear_.back()->setColor(color_acceleration_linear_);
 
       // acceleration angular
       vector = Ogre::Vector3(msg.accelerations[i].angular.x, msg.accelerations[i].angular.y, msg.accelerations[i].angular.z);
@@ -128,7 +125,6 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
           0.2*scale_acceleration_angular_*accelerations_angular_absolute_.back(),
           2.0*diameter_arrows_)));
       accelerations_angular_.back()->setDirection(vector);
-      accelerations_angular_.back()->setColor(color_acceleration_angular_);
     }
 
     // text
@@ -136,6 +132,13 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
     texts_.back()->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
     transforms_position_.back()->attachObject(texts_.back().get());
   }
+
+  // update all colors
+  updateAlphaTransformRotation();
+  updateColorVelocityLinear();
+  updateColorVelocityAngular();
+  updateColorAccelerationLinear();
+  updateColorAccelerationAngular();
 }
 
 MultiDOFJointTrajectoryPointVisual::~MultiDOFJointTrajectoryPointVisual()
@@ -144,6 +147,36 @@ MultiDOFJointTrajectoryPointVisual::~MultiDOFJointTrajectoryPointVisual()
   {
     scene_manager_->destroySceneNode(transforms_position_[i]);
   }
+}
+
+void MultiDOFJointTrajectoryPointVisual::setShowTransformRotation(bool visible)
+{
+  show_transform_rotation_ = visible;
+  updateAlphaTransformRotation();
+}
+
+void MultiDOFJointTrajectoryPointVisual::setShowVelocityLinear(bool visible)
+{
+  show_velocity_linear_ = visible;
+  updateColorVelocityLinear();
+}
+
+void MultiDOFJointTrajectoryPointVisual::setShowVelocityAngular(bool visible)
+{
+  show_velocity_angular_ = visible;
+  updateColorVelocityAngular();
+}
+
+void MultiDOFJointTrajectoryPointVisual::setShowAccelerationLinear(bool visible)
+{
+  show_acceleration_linear_ = visible;
+  updateColorAccelerationLinear();
+}
+
+void MultiDOFJointTrajectoryPointVisual::setShowAccelerationAngular(bool visible)
+{
+  show_acceleration_angular_ = visible;
+  updateColorAccelerationAngular();
 }
 
 void MultiDOFJointTrajectoryPointVisual::setSizeTransformRotation(float size)
@@ -304,13 +337,13 @@ void MultiDOFJointTrajectoryPointVisual::updateAlphaTransformRotation()
   for (unsigned int i = 0; i < transforms_rotation_.size(); i++)
   {
     color = transforms_rotation_[i]->getDefaultXColor();
-    color.a = alpha_transform_rotatation_;
+    color.a = show_transform_rotation_*alpha_transform_rotatation_;
     transforms_rotation_[i]->setXColor(color);
     color = transforms_rotation_[i]->getDefaultYColor();
-    color.a = alpha_transform_rotatation_;
+    color.a = show_transform_rotation_*alpha_transform_rotatation_;
     transforms_rotation_[i]->setYColor(color);
     color = transforms_rotation_[i]->getDefaultZColor();
-    color.a = alpha_transform_rotatation_;
+    color.a = show_transform_rotation_*alpha_transform_rotatation_;
     transforms_rotation_[i]->setZColor(color);
   }
 }
@@ -319,7 +352,7 @@ void MultiDOFJointTrajectoryPointVisual::updateColorVelocityLinear()
 {
   for (unsigned int i = 0; i < velocities_linear_.size(); i++)
   {
-    velocities_linear_[i]->setColor(color_velocity_linear_);
+    velocities_linear_[i]->setColor(getColor(color_velocity_linear_, show_velocity_linear_));
   }
 }
 
@@ -327,7 +360,7 @@ void MultiDOFJointTrajectoryPointVisual::updateColorVelocityAngular()
 {
   for (unsigned int i = 0; i < velocities_angular_.size(); i++)
   {
-    velocities_angular_[i]->setColor(color_velocity_angular_);
+    velocities_angular_[i]->setColor(getColor(color_velocity_angular_, show_velocity_angular_));
   }
 }
 
@@ -335,7 +368,7 @@ void MultiDOFJointTrajectoryPointVisual::updateColorAccelerationLinear()
 {
   for (unsigned int i = 0; i < accelerations_linear_.size(); i++)
   {
-    accelerations_linear_[i]->setColor(color_acceleration_linear_);
+    accelerations_linear_[i]->setColor(getColor(color_acceleration_linear_, show_acceleration_linear_));
   }
 }
 
@@ -343,7 +376,7 @@ void MultiDOFJointTrajectoryPointVisual::updateColorAccelerationAngular()
 {
   for (unsigned int i = 0; i < accelerations_angular_.size(); i++)
   {
-    accelerations_angular_[i]->setColor(color_acceleration_angular_);
+    accelerations_angular_[i]->setColor(getColor(color_acceleration_angular_, show_acceleration_angular_));
   }
 }
 
@@ -370,6 +403,20 @@ void MultiDOFJointTrajectoryPointVisual::updateShowText()
   for (unsigned int i = 0; i < texts_.size(); i++)
   {
     texts_[i]->setCharacterHeight(character_height);
+  }
+}
+
+Ogre::ColourValue MultiDOFJointTrajectoryPointVisual::getColor(const Ogre::ColourValue& color, bool visible)
+{
+  if (!visible)
+  {
+    Ogre::ColourValue color_invisible = color;
+    color_invisible.a = 0;
+    return color_invisible;
+  }
+  else
+  {
+    return color;
   }
 }
 

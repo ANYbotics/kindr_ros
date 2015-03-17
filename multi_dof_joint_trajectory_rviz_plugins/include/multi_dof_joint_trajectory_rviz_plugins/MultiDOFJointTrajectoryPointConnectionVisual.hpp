@@ -22,12 +22,15 @@ public:
       Ogre::SceneNode* parent_node,
       const trajectory_msgs::MultiDOFJointTrajectoryPoint& from,
       const trajectory_msgs::MultiDOFJointTrajectoryPoint& to,
+      float show_connection,
       const Ogre::ColourValue& color);
   virtual ~MultiDOFJointTrajectoryPointConnectionVisual();
 
+  void setShowConnection(bool visible);
   void setColor(const Ogre::ColourValue& color);
 
 private:
+  void updateShowConnection();
   void updateColor();
 
   Ogre::SceneManager* scene_manager_;
@@ -36,6 +39,7 @@ private:
 
   std::vector<boost::shared_ptr<rviz::Line>> lines_;
 
+  float show_connection_;
   Ogre::ColourValue color_;
 };
 

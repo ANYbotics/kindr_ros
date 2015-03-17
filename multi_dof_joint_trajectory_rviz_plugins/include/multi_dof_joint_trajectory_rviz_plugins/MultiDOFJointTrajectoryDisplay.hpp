@@ -42,6 +42,13 @@ protected:
 
 
 private Q_SLOTS:
+  void setShowConnection();
+  void setShowTransformRotation();
+  void setShowVelocityLinear();
+  void setShowVelocityAngular();
+  void setShowAccelerationLinear();
+  void setShowAccelerationAngular();
+
   void setSizeTransformRotation();
   void setDiameterArrows();
   void setScaleVelocityLinear();
@@ -65,6 +72,13 @@ private Q_SLOTS:
 private:
   void processMessage(const trajectory_msgs::MultiDOFJointTrajectory::ConstPtr& msg);
 
+  void updateShowConnection();
+  void updateShowTransformRotation();
+  void updateShowVelocityLinear();
+  void updateShowVelocityAngular();
+  void updateShowAccelerationLinear();
+  void updateShowAccelerationAngular();
+
   void updateSizeTransformRotation();
   void updateDiameterArrows();
   void updateScaleVelocityLinear();
@@ -82,28 +96,42 @@ private:
   void updateFontSize();
   void updateShowText();
 
-  boost::circular_buffer<std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>>> points_visuals_;
-  boost::circular_buffer<std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>>> connections_visuals_;
+  boost::circular_buffer<std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>>> visuals_points_;
+  boost::circular_buffer<std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>>> visuals_connections_;
 
-  rviz::FloatProperty* size_property_transform_rotation_;
-  rviz::FloatProperty* diameter_property_arrows_;
-  rviz::FloatProperty* scale_property_velocity_linear_;
-  rviz::FloatProperty* scale_property_velocity_angular_;
-  rviz::FloatProperty* scale_property_acceleration_linear_;
-  rviz::FloatProperty* scale_property_acceleration_angular_;
+  rviz::BoolProperty* property_show_connection_;
+  rviz::BoolProperty* property_show_transform_rotation_;
+  rviz::BoolProperty* property_show_velocity_linear_;
+  rviz::BoolProperty* property_show_velocity_angular_;
+  rviz::BoolProperty* property_show_acceleration_linear_;
+  rviz::BoolProperty* property_show_acceleration_angular_;
 
-  rviz::ColorProperty* color_property_connection_;
-  rviz::ColorProperty* color_property_velocity_linear_;
-  rviz::ColorProperty* color_property_velocity_angular_;
-  rviz::ColorProperty* color_property_acceleration_linear_;
-  rviz::ColorProperty* color_property_acceleration_angular_;
+  rviz::FloatProperty* property_size_transform_rotation_;
+  rviz::FloatProperty* property_diameter_arrows_;
+  rviz::FloatProperty* property_scale_velocity_linear_;
+  rviz::FloatProperty* property_scale_velocity_angular_;
+  rviz::FloatProperty* property_scale_acceleration_linear_;
+  rviz::FloatProperty* property_scale_acceleration_angular_;
 
-  rviz::FloatProperty* alpha_property_;
+  rviz::ColorProperty* property_color_connection_;
+  rviz::ColorProperty* property_color_velocity_linear_;
+  rviz::ColorProperty* property_color_velocity_angular_;
+  rviz::ColorProperty* property_color_acceleration_linear_;
+  rviz::ColorProperty* property_color_acceleration_angular_;
 
-  rviz::FloatProperty* font_size_property_;
-  rviz::BoolProperty* show_text_property_;
+  rviz::FloatProperty* property_alpha_;
 
-  rviz::IntProperty* history_length_property_;
+  rviz::FloatProperty* property_font_size_;
+  rviz::BoolProperty* property_show_text_;
+
+  rviz::IntProperty* property_history_length_;
+
+  bool show_connection_;
+  bool show_transform_rotation_;
+  bool show_velocity_linear_;
+  bool show_velocity_angular_;
+  bool show_acceleration_linear_;
+  bool show_acceleration_angular_;
 
   float size_transform_rotation_;
   float diameter_arrows_;

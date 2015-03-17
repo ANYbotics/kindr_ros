@@ -24,6 +24,11 @@ public:
       Ogre::SceneManager* scene_manager,
       Ogre::SceneNode* parent_node,
       const trajectory_msgs::MultiDOFJointTrajectoryPoint& msg,
+      bool show_transform_rotation,
+      bool show_velocity_linear,
+      bool show_velocity_angular,
+      bool show_acceleration_linear,
+      bool show_acceleration_angular,
       float size_transform_rotation,
       float diameter_arrows,
       float scale_velocity_linear,
@@ -39,6 +44,12 @@ public:
       float font_size,
       bool show_text);
   virtual ~MultiDOFJointTrajectoryPointVisual();
+
+  void setShowTransformRotation(bool visible);
+  void setShowVelocityLinear(bool visible);
+  void setShowVelocityAngular(bool visible);
+  void setShowAccelerationLinear(bool visible);
+  void setShowAccelerationAngular(bool visible);
 
   void setSizeTransformRotation(float size);
   void setDiametersArrows(float diameter);
@@ -76,6 +87,7 @@ private:
   void updateFontSize();
   void updateShowText();
 
+  Ogre::ColourValue getColor(const Ogre::ColourValue& color, bool visible);
   float getCharacterHeight();
 
   Ogre::SceneManager* scene_manager_;
@@ -92,6 +104,12 @@ private:
   std::vector<double> velocities_angular_absolute_;
   std::vector<double> accelerations_linear_absolute_;
   std::vector<double> accelerations_angular_absolute_;
+
+  bool show_transform_rotation_;
+  bool show_velocity_linear_;
+  bool show_velocity_angular_;
+  bool show_acceleration_linear_;
+  bool show_acceleration_angular_;
 
   const float axis_radius_per_size_;
 
