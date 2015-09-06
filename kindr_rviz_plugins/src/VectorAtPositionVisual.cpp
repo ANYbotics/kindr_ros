@@ -100,34 +100,34 @@ void VectorAtPositionVisual::setMessage(const kindr_msgs::VectorAtPosition::Cons
     arrow_node_->attachObject(text_.get());
   }
 
-  // set color
-  if (msg->type == msg->TYPE_POSITION)
-  {
-    color_ = Ogre::ColourValue::Blue;
+//  // set color
+//  if (msg->type == msg->TYPE_POSITION)
+//  {
+//    color_ = Ogre::ColourValue::Blue;
+//    colorCanBeOverwritten_ = true;
+//    setColor(color_.r, color_.g, color_.b, color_.a);
+//    colorCanBeOverwritten_ = false;
+//  }
+//  else if (msg->type == msg->TYPE_VELOCITY || msg->type == msg->TYPE_ANGULAR_VELOCITY)
+//  {
+//    color_ = Ogre::ColourValue::Green;
+//    colorCanBeOverwritten_ = true;
+//    setColor(color_.r, color_.g, color_.b, color_.a);
+//    colorCanBeOverwritten_ = false;
+//  }
+//  else if (msg->type == msg->TYPE_FORCE || msg->type == msg->TYPE_TORQUE)
+//  {
+//   // color_ = Ogre::ColourValue::Red;
+//    colorCanBeOverwritten_ = true;
+//    setColor(color_.r, color_.g, color_.b, color_.a);
+//    colorCanBeOverwritten_ = false;
+//  }
+//  else
+//  {
+//    color_ = Ogre::ColourValue::Black;
     colorCanBeOverwritten_ = true;
     setColor(color_.r, color_.g, color_.b, color_.a);
-    colorCanBeOverwritten_ = false;
-  }
-  else if (msg->type == msg->TYPE_VELOCITY || msg->type == msg->TYPE_ANGULAR_VELOCITY)
-  {
-    color_ = Ogre::ColourValue::Green;
-    colorCanBeOverwritten_ = true;
-    setColor(color_.r, color_.g, color_.b, color_.a);
-    colorCanBeOverwritten_ = false;
-  }
-  else if (msg->type == msg->TYPE_FORCE || msg->type == msg->TYPE_TORQUE)
-  {
-    color_ = Ogre::ColourValue::Red;
-    colorCanBeOverwritten_ = true;
-    setColor(color_.r, color_.g, color_.b, color_.a);
-    colorCanBeOverwritten_ = false;
-  }
-  else
-  {
-    color_ = Ogre::ColourValue::Black;
-    colorCanBeOverwritten_ = true;
-    setColor(color_.r, color_.g, color_.b, color_.a);
-  }
+//  }
 }
 
 // Position and orientation are passed through to the SceneNode.
@@ -156,10 +156,10 @@ void VectorAtPositionVisual::setShowText(bool showText)
 // Color is passed through to the Arrow object.
 void VectorAtPositionVisual::setColor(float r, float g, float b, float a)
 {
-  if (colorCanBeOverwritten_)
-  {
+//  if (colorCanBeOverwritten_)
+//  {
     arrow_->setColor(r, g, b, a);
-  }
+//  }
 }
 
 // Update the scaling of the arrow.
