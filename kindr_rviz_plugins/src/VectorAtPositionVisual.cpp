@@ -44,8 +44,7 @@ VectorAtPositionVisual::VectorAtPositionVisual(Ogre::SceneManager* scene_manager
   lengthScalingFactor_(1.0),
   widthScalingFactor_(1.0),
   showText_(true),
-  color_(Ogre::ColourValue(0,0,0,1)),
-  colorCanBeOverwritten_(true)
+  color_(Ogre::ColourValue(0,0,0,1))
 {
   scene_manager_ = scene_manager;
 
@@ -56,21 +55,27 @@ VectorAtPositionVisual::VectorAtPositionVisual(Ogre::SceneManager* scene_manager
   //
   // Here we create a node to store the pose of the VectorAtPosition's header frame
   // relative to the RViz fixed frame.
-  arrow_node_ = parent_node->createChildSceneNode();
+  scene_node_arrow_ = parent_node->createChildSceneNode();
+  scene_node_text_ = scene_node_arrow_->createChildSceneNode();
+  scene_node_text_->setPosition(Ogre::Vector3(0, 0, -0.05));
 
   // We create the arrow object within the frame node so that we can
   // set its position and direction relative to its header frame.
-  arrow_.reset(new rviz::Arrow(scene_manager_, arrow_node_, 0.8f, 0.07f, 0.2f, 0.15f));
+  arrow_.reset(new rviz::Arrow(scene_manager_, scene_node_arrow_, 0.8f, 0.07f, 0.2f, 0.15f));
 }
 
 VectorAtPositionVisual::~VectorAtPositionVisual()
 {
   // Destroy the frame node since we don't need it anymore.
-  scene_manager_->destroySceneNode(arrow_node_);
+  scene_manager_->destroySceneNode(scene_node_arrow_);
+  scene_manager_->destroySceneNode(scene_node_text_);
 }
 
 void VectorAtPositionVisual::setMessage(const kindr_msgs::VectorAtPosition::ConstPtr& msg)
 {
+  // Set the name of the arrow.
+  name_ = msg->name;
+
   // Convert the geometry_msgs::Vector3 to an Ogre::Vector3.
   const Ogre::Vector3 vectorOgre(msg->vector.x, msg->vector.y, msg->vector.z);
 
@@ -80,93 +85,66 @@ void VectorAtPositionVisual::setMessage(const kindr_msgs::VectorAtPosition::Cons
   // Set the orientation of the arrow to match the direction of the vector.
   arrow_->setDirection(vectorOgre);
 
-  // Find the magnitude of the acceleration vector.
+  // Find the magnitude of the vector.
   length_ = vectorOgre.length();
 
   // update the scaling
   updateScaling();
 
-  // add description text if available
-  if (showText_)
-  {
-    text_.reset(new rviz::MovableText(msg->name, "Arial", 0.1));
-    text_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
-    arrow_node_->attachObject(text_.get());
-  }
-  else
-  {
-    text_.reset(new rviz::MovableText("", "Arial", 0.1));
-    text_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
-    arrow_node_->attachObject(text_.get());
-  }
+  // update the color
+  updateColor();
 
-//  // set color
-//  if (msg->type == msg->TYPE_POSITION)
-//  {
-//    color_ = Ogre::ColourValue::Blue;
-//    colorCanBeOverwritten_ = true;
-//    setColor(color_.r, color_.g, color_.b, color_.a);
-//    colorCanBeOverwritten_ = false;
-//  }
-//  else if (msg->type == msg->TYPE_VELOCITY || msg->type == msg->TYPE_ANGULAR_VELOCITY)
-//  {
-//    color_ = Ogre::ColourValue::Green;
-//    colorCanBeOverwritten_ = true;
-//    setColor(color_.r, color_.g, color_.b, color_.a);
-//    colorCanBeOverwritten_ = false;
-//  }
-//  else if (msg->type == msg->TYPE_FORCE || msg->type == msg->TYPE_TORQUE)
-//  {
-//   // color_ = Ogre::ColourValue::Red;
-//    colorCanBeOverwritten_ = true;
-//    setColor(color_.r, color_.g, color_.b, color_.a);
-//    colorCanBeOverwritten_ = false;
-//  }
-//  else
-//  {
-//    color_ = Ogre::ColourValue::Black;
-    colorCanBeOverwritten_ = true;
-    setColor(color_.r, color_.g, color_.b, color_.a);
-//  }
+  // update the text
+  updateText();
 }
 
-// Position and orientation are passed through to the SceneNode.
 void VectorAtPositionVisual::setArrowPosition(const Ogre::Vector3& position)
 {
-  arrow_node_->setPosition(position);
+  scene_node_arrow_->setPosition(position);
 }
 
 void VectorAtPositionVisual::setArrowOrientation(const Ogre::Quaternion& orientation)
 {
-  arrow_node_->setOrientation(orientation);
+  scene_node_arrow_->setOrientation(orientation);
 }
 
-// Scale is passed through to the Arrow object.
 void VectorAtPositionVisual::setScalingFactors(float lengthScalingFactor, float widthScalingFactor)
 {
   lengthScalingFactor_ = lengthScalingFactor;
   widthScalingFactor_ = widthScalingFactor;
   updateScaling();
 }
+
+void VectorAtPositionVisual::setColor(const Ogre::ColourValue& color)
+{
+  color_ = color;
+  updateColor();
+}
+
 void VectorAtPositionVisual::setShowText(bool showText)
 {
   showText_ = showText;
+  updateText();
 }
 
-// Color is passed through to the Arrow object.
-void VectorAtPositionVisual::setColor(float r, float g, float b, float a)
-{
-//  if (colorCanBeOverwritten_)
-//  {
-    arrow_->setColor(r, g, b, a);
-//  }
-}
-
-// Update the scaling of the arrow.
 void VectorAtPositionVisual::updateScaling()
 {
   // Scale the arrow's thickness in each dimension along with its length and scaling factors.
   arrow_->setScale(Ogre::Vector3(lengthScalingFactor_ * length_, widthScalingFactor_, widthScalingFactor_));
+}
+
+void VectorAtPositionVisual::updateColor()
+{
+  arrow_->setColor(color_);
+}
+
+void VectorAtPositionVisual::updateText()
+{
+  // add description text if available
+  const std::string textString = showText_? name_ : "";
+  text_.reset(new rviz::MovableText(textString, "Arial", 0.1));
+  text_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
+  scene_node_text_->attachObject(text_.get());
 }
 
 } // kindr_rviz_plugins

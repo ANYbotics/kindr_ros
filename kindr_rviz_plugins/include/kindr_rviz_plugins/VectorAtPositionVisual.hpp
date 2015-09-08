@@ -1,7 +1,11 @@
 #pragma once
 
-#include <kindr_msgs/VectorAtPosition.h>
+// rviz
 #include <rviz/default_plugin/markers/text_view_facing_marker.h>
+
+// kindr ros
+#include <kindr_msgs/VectorAtPosition.h>
+
 
 namespace Ogre {
 class Vector3;
@@ -12,6 +16,7 @@ namespace rviz {
 class Arrow;
 class MovableText;
 } // rviz
+
 
 namespace kindr_rviz_plugins {
 
@@ -52,14 +57,17 @@ public:
 
   // Set the color and alpha of the visual, which are user-editable
   // parameters and therefore don't come from the VectorAtPosition message.
-  void setColor(float r, float g, float b, float a);
+  void setColor(const Ogre::ColourValue& color);
 
-private:
+protected:
   // The object implementing the actual arrow shape
   boost::shared_ptr<rviz::Arrow> arrow_;
 
   // The object implementing the arrow description text
   boost::shared_ptr<rviz::MovableText> text_;
+
+  // Store the name
+  std::string name_;
 
   // Store the scaling factor and the length of the vector, so that it can be scale afterwards
   float length_;
@@ -71,11 +79,11 @@ private:
 
   // Store the arrow color
   Ogre::ColourValue color_;
-  bool colorCanBeOverwritten_;
 
   // A SceneNode whose pose is set to match the coordinate frame of
   // the VectorAtPosition message header.
-  Ogre::SceneNode* arrow_node_;
+  Ogre::SceneNode* scene_node_arrow_;
+  Ogre::SceneNode* scene_node_text_;
 
   // The SceneManager, kept here only so the destructor can ask it to
   // destroy the ``frame_node_``.
@@ -83,6 +91,12 @@ private:
 
   // Update the scaling of the arrow
   void updateScaling();
+
+  // Update the color of the arrow
+  void updateColor();
+
+  // Update the text of the arrow
+  void updateText();
 };
 
 } // kindr_rviz_plugins

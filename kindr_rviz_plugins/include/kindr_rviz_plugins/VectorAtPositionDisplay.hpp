@@ -1,11 +1,16 @@
 #pragma once
 
 #ifndef Q_MOC_RUN
+// boost
 #include <boost/circular_buffer.hpp>
 
+// rviz
 #include <rviz/message_filter_display.h>
+
+// kindr ros
 #include <kindr_msgs/VectorAtPosition.h>
 #endif
+
 
 namespace Ogre {
 class SceneNode;
@@ -16,6 +21,7 @@ class ColorProperty;
 class FloatProperty;
 class IntProperty;
 } // rviz
+
 
 // All the source in this plugin is in its own namespace. This is not
 // required but is good practice.
