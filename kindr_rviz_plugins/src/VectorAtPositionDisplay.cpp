@@ -1,45 +1,21 @@
-/*
- * Copyright (c) 2012, Willow Garage, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Willow Garage, Inc. nor the names of its
- *       contributors may be used to endorse or promote products derived from
- *       this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
+// ogre
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 
+// tf
 #include <tf/transform_listener.h>
 
+// rviz
 #include <rviz/visualization_manager.h>
 #include <rviz/properties/color_property.h>
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/int_property.h>
 #include <rviz/frame_manager.h>
 
+// kindr rviz plugins
 #include "kindr_rviz_plugins/VectorAtPositionDisplay.hpp"
 #include "kindr_rviz_plugins/VectorAtPositionVisual.hpp"
+
 
 namespace kindr_rviz_plugins {
 
@@ -57,25 +33,25 @@ VectorAtPositionDisplay::VectorAtPositionDisplay()
                                                    this, SLOT(updateScale()));
 
   width_scale_property_ = new rviz::FloatProperty("Width scale", 1.0,
-                                                   "Scale of the width of the vector.",
-                                                   this, SLOT(updateScale()));
+                                                  "Scale of the width of the vector.",
+                                                  this, SLOT(updateScale()));
   width_scale_property_->setMin(0);
 
   show_text_property_ = new rviz::BoolProperty("Show text", true,
-                                             "Enable or disable text rendering.",
-                                             this, SLOT(updateShowText()));
+                                              "Enable or disable text rendering.",
+                                              this, SLOT(updateShowText()));
 
   color_property_ = new rviz::ColorProperty("Color", QColor(0, 0, 0),
-                                             "Color to draw the vector (if not defined by vector type).",
-                                             this, SLOT(updateColorAndAlpha()));
+                                            "Color to draw the vector (if not defined by vector type).",
+                                            this, SLOT(updateColorAndAlpha()));
 
   alpha_property_ = new rviz::FloatProperty("Alpha", 1.0,
-                                             "0 is fully transparent, 1.0 is fully opaque.",
-                                             this, SLOT(updateColorAndAlpha()));
+                                            "0 is fully transparent, 1.0 is fully opaque.",
+                                            this, SLOT(updateColorAndAlpha()));
 
   history_length_property_ = new rviz::IntProperty("History Length", 1,
-                                                    "Number of prior measurements to display.",
-                                                    this, SLOT(updateHistoryLength()));
+                                                   "Number of prior measurements to display.",
+                                                   this, SLOT(updateHistoryLength()));
   history_length_property_->setMin(1);
   history_length_property_->setMax(100000);
 }
@@ -134,11 +110,11 @@ void VectorAtPositionDisplay::updateShowText()
 void VectorAtPositionDisplay::updateColorAndAlpha()
 {
   color_ = color_property_->getOgreColor();
-  alpha_ = alpha_property_->getFloat();
+  color_.a = alpha_property_->getFloat();
 
   for(size_t i = 0; i < visuals_.size(); i++)
   {
-    visuals_[i]->setColor(color_.r, color_.g, color_.b, alpha_);
+    visuals_[i]->setColor(color_);
   }
 }
 
@@ -156,7 +132,7 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
   Ogre::Vector3 arrowPosition;
   Ogre::Quaternion arrowOrientation;
 
-  // If the position has a different frame than the vector
+  // Check if the position has an empty or the same frame as the vector
   if (msg->position_frame_id.empty() || msg->position_frame_id == msg->header.frame_id)
   {
     // Get arrow position and orientation
@@ -202,14 +178,9 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
   visual->setMessage(msg);
   visual->setArrowPosition(arrowPosition); // position is taken from position in msg
   visual->setArrowOrientation(arrowOrientation); // orientation is taken from vector in msg
-
-  lengthScale_ = length_scale_property_->getFloat();
-  widthScale_ = width_scale_property_->getFloat();
   visual->setScalingFactors(lengthScale_, widthScale_);
-  showText_ = show_text_property_->getBool();
   visual->setShowText(showText_);
-  alpha_ = alpha_property_->getFloat();
-  visual->setColor(color_.r, color_.g, color_.b, alpha_);
+  visual->setColor(color_);
 
   // And send it to the end of the circular buffer
   visuals_.push_back(visual);
@@ -217,7 +188,8 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
 
 } // kindr_rviz_plugins
 
+
 // Tell pluginlib about this class. It is important to do this in
 // global scope, outside our package's namespace.
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(kindr_rviz_plugins::VectorAtPositionDisplay,rviz::Display)
+PLUGINLIB_EXPORT_CLASS(kindr_rviz_plugins::VectorAtPositionDisplay, rviz::Display)
