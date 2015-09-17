@@ -27,6 +27,8 @@ MultiDOFJointTrajectoryDisplay::MultiDOFJointTrajectoryDisplay()
   font_size_(0.05),
   show_text_(true)
 {
+  connect(this, SIGNAL(updateTrajectorySignal()), this, SLOT(updateTrajectory()));
+
   property_show_connection_ = new rviz::BoolProperty(
       "Show Connections", show_connection_,
       "Enable or disable connections rendering.",
@@ -300,123 +302,128 @@ void MultiDOFJointTrajectoryDisplay::setHistoryLength()
   visuals_connections_.rset_capacity(property_history_length_->getInt());
 }
 
+void MultiDOFJointTrajectoryDisplay::updateTrajectory() {
+    show_connection_           = property_show_connection_->getBool();
+    show_transform_rotation_   = property_show_transform_rotation_->getBool();
+    show_velocity_linear_      = property_show_velocity_linear_->getBool();
+    show_velocity_angular_     = property_show_velocity_angular_->getBool();
+    show_acceleration_linear_  = property_show_acceleration_linear_->getBool();
+    show_acceleration_angular_ = property_show_acceleration_angular_->getBool();
+
+    size_transform_rotation_    = property_size_transform_rotation_->getFloat();
+    scale_velocity_linear_      = property_scale_velocity_linear_->getFloat();
+    scale_velocity_angular_     = property_scale_velocity_angular_->getFloat();
+    scale_acceleration_linear_  = property_scale_acceleration_linear_->getFloat();
+    scale_acceleration_angular_ = property_scale_acceleration_angular_->getFloat();
+
+    color_connection_           = rviz::qtToOgre(property_color_connection_->getColor());
+    color_velocity_linear_      = rviz::qtToOgre(property_color_velocity_linear_->getColor());
+    color_velocity_angular_     = rviz::qtToOgre(property_color_velocity_angular_->getColor());
+    color_acceleration_linear_  = rviz::qtToOgre(property_color_acceleration_linear_->getColor());
+    color_acceleration_angular_ = rviz::qtToOgre(property_color_acceleration_angular_->getColor());
+    alpha_ = property_alpha_->getFloat();
+    color_connection_.a           = alpha_;
+    color_velocity_linear_.a      = alpha_;
+    color_velocity_angular_.a     = alpha_;
+    color_acceleration_linear_.a  = alpha_;
+    color_acceleration_angular_.a = alpha_;
+
+    std::vector<std::vector<std::string>> captions;
+    for (unsigned int i = 0; i < current_trajectory_->points.size(); i++)
+    {
+        std::vector<std::string> caption_point;
+        for (unsigned int j = 0; j < current_trajectory_->joint_names.size(); j++)
+        {
+            std::stringstream ss;
+            ss << current_trajectory_->joint_names[j] << ": t" << i << " = " << current_trajectory_->points[i].time_from_start.toSec() << "s";
+            caption_point.push_back(ss.str());
+        }
+        captions.push_back(caption_point);
+    }
+
+    font_size_ = property_font_size_->getFloat();
+    show_text_ = property_show_text_->getBool();
+
+    std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>> visuals_points;
+    std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>> visuals_connections;
+
+    trajectory_msgs::MultiDOFJointTrajectoryPoint last_point;
+    trajectory_msgs::MultiDOFJointTrajectoryPoint current_point = current_trajectory_->points[0];
+
+    // add first point
+    visuals_points.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>(new MultiDOFJointTrajectoryPointVisual(
+            context_->getSceneManager(),
+            scene_node_,
+            current_point,
+            show_transform_rotation_,
+            show_velocity_linear_,
+            show_velocity_angular_,
+            show_acceleration_linear_,
+            show_acceleration_angular_,
+            size_transform_rotation_,
+            diameter_arrows_,
+            scale_velocity_linear_,
+            scale_velocity_angular_,
+            scale_acceleration_linear_,
+            scale_acceleration_angular_,
+            alpha_,
+            color_velocity_linear_,
+            color_velocity_angular_,
+            color_acceleration_linear_,
+            color_acceleration_angular_,
+            captions[0],
+            font_size_,
+            show_text_)));
+
+    // add second to last points and connections to predecessors
+    for (unsigned int i = 1; i < current_trajectory_->points.size(); i++)
+    {
+        // go one pose further
+        last_point = current_point;
+        current_point = current_trajectory_->points[i];
+
+        // add edge to predecessor
+        visuals_connections.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>(new MultiDOFJointTrajectoryPointConnectionVisual(context_->getSceneManager(),
+                                                                                                                                                       scene_node_,
+                                                                                                                                                       last_point,
+                                                                                                                                                       current_point,
+                                                                                                                                                       show_connection_,
+                                                                                                                                                       color_connection_)));
+
+        // add pose
+        visuals_points.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>(new MultiDOFJointTrajectoryPointVisual(
+                context_->getSceneManager(),
+                scene_node_,
+                current_point,
+                show_transform_rotation_,
+                show_velocity_linear_,
+                show_velocity_angular_,
+                show_acceleration_linear_,
+                show_acceleration_angular_,
+                size_transform_rotation_,
+                diameter_arrows_,
+                scale_velocity_linear_,
+                scale_velocity_angular_,
+                scale_acceleration_linear_,
+                scale_acceleration_angular_,
+                alpha_,
+                color_velocity_linear_,
+                color_velocity_angular_,
+                color_acceleration_linear_,
+                color_acceleration_angular_,
+                captions[i],
+                font_size_,
+                show_text_)));
+    }
+
+    visuals_points_.push_back(visuals_points);
+    visuals_connections_.push_back(visuals_connections);
+}
+
 void MultiDOFJointTrajectoryDisplay::processMessage(const trajectory_msgs::MultiDOFJointTrajectory::ConstPtr& msg)
 {
-  show_connection_           = property_show_connection_->getBool();
-  show_transform_rotation_   = property_show_transform_rotation_->getBool();
-  show_velocity_linear_      = property_show_velocity_linear_->getBool();
-  show_velocity_angular_     = property_show_velocity_angular_->getBool();
-  show_acceleration_linear_  = property_show_acceleration_linear_->getBool();
-  show_acceleration_angular_ = property_show_acceleration_angular_->getBool();
-
-  size_transform_rotation_    = property_size_transform_rotation_->getFloat();
-  scale_velocity_linear_      = property_scale_velocity_linear_->getFloat();
-  scale_velocity_angular_     = property_scale_velocity_angular_->getFloat();
-  scale_acceleration_linear_  = property_scale_acceleration_linear_->getFloat();
-  scale_acceleration_angular_ = property_scale_acceleration_angular_->getFloat();
-
-  color_connection_           = rviz::qtToOgre(property_color_connection_->getColor());
-  color_velocity_linear_      = rviz::qtToOgre(property_color_velocity_linear_->getColor());
-  color_velocity_angular_     = rviz::qtToOgre(property_color_velocity_angular_->getColor());
-  color_acceleration_linear_  = rviz::qtToOgre(property_color_acceleration_linear_->getColor());
-  color_acceleration_angular_ = rviz::qtToOgre(property_color_acceleration_angular_->getColor());
-  alpha_ = property_alpha_->getFloat();
-  color_connection_.a           = alpha_;
-  color_velocity_linear_.a      = alpha_;
-  color_velocity_angular_.a     = alpha_;
-  color_acceleration_linear_.a  = alpha_;
-  color_acceleration_angular_.a = alpha_;
-
-  std::vector<std::vector<std::string>> captions;
-  for (unsigned int i = 0; i < msg->points.size(); i++)
-  {
-    std::vector<std::string> caption_point;
-    for (unsigned int j = 0; j < msg->joint_names.size(); j++)
-    {
-      std::stringstream ss;
-      ss << msg->joint_names[j] << ": t" << i << " = " << msg->points[i].time_from_start.toSec() << "s";
-      caption_point.push_back(ss.str());
-    }
-    captions.push_back(caption_point);
-  }
-
-  font_size_ = property_font_size_->getFloat();
-  show_text_ = property_show_text_->getBool();
-
-  std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>> visuals_points;
-  std::vector<boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>> visuals_connections;
-
-  trajectory_msgs::MultiDOFJointTrajectoryPoint last_point;
-  trajectory_msgs::MultiDOFJointTrajectoryPoint current_point = msg->points[0];
-
-  // add first point
-  visuals_points.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>(new MultiDOFJointTrajectoryPointVisual(
-      context_->getSceneManager(),
-      scene_node_,
-      current_point,
-      show_transform_rotation_,
-      show_velocity_linear_,
-      show_velocity_angular_,
-      show_acceleration_linear_,
-      show_acceleration_angular_,
-      size_transform_rotation_,
-      diameter_arrows_,
-      scale_velocity_linear_,
-      scale_velocity_angular_,
-      scale_acceleration_linear_,
-      scale_acceleration_angular_,
-      alpha_,
-      color_velocity_linear_,
-      color_velocity_angular_,
-      color_acceleration_linear_,
-      color_acceleration_angular_,
-      captions[0],
-      font_size_,
-      show_text_)));
-
-  // add second to last points and connections to predecessors
-  for (unsigned int i = 1; i < msg->points.size(); i++)
-  {
-    // go one pose further
-    last_point = current_point;
-    current_point = msg->points[i];
-
-    // add edge to predecessor
-    visuals_connections.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointConnectionVisual>(new MultiDOFJointTrajectoryPointConnectionVisual(context_->getSceneManager(),
-        scene_node_,
-        last_point,
-        current_point,
-        show_connection_,
-        color_connection_)));
-
-    // add pose
-    visuals_points.push_back(boost::shared_ptr<MultiDOFJointTrajectoryPointVisual>(new MultiDOFJointTrajectoryPointVisual(
-        context_->getSceneManager(),
-        scene_node_,
-        current_point,
-        show_transform_rotation_,
-        show_velocity_linear_,
-        show_velocity_angular_,
-        show_acceleration_linear_,
-        show_acceleration_angular_,
-        size_transform_rotation_,
-        diameter_arrows_,
-        scale_velocity_linear_,
-        scale_velocity_angular_,
-        scale_acceleration_linear_,
-        scale_acceleration_angular_,
-        alpha_,
-        color_velocity_linear_,
-        color_velocity_angular_,
-        color_acceleration_linear_,
-        color_acceleration_angular_,
-        captions[i],
-        font_size_,
-        show_text_)));
-  }
-
-  visuals_points_.push_back(visuals_points);
-  visuals_connections_.push_back(visuals_connections);
+  current_trajectory_ = msg;
+  Q_EMIT updateTrajectorySignal();
 }
 
 void MultiDOFJointTrajectoryDisplay::updateShowConnection()

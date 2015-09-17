@@ -28,6 +28,8 @@ VectorAtPositionDisplay::VectorAtPositionDisplay()
   color_(Ogre::ColourValue::Black),
   alpha_(1.0)
 {
+  connect(this, SIGNAL(updateVectorAtPositionSignal()), this, SLOT(updateVectorAtPosition()));
+
   length_scale_property_ = new rviz::FloatProperty("Length scale", 1.0,
                                                    "Scale of the length of the vector.",
                                                    this, SLOT(updateScale()));
@@ -124,21 +126,20 @@ void VectorAtPositionDisplay::updateHistoryLength()
   visuals_.rset_capacity(history_length_property_->getInt());
 }
 
-// This is our callback to handle an incoming message.
-void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition::ConstPtr& msg)
-{
+void VectorAtPositionDisplay::updateVectorAtPosition() {
+
   // Here we call the rviz::FrameManager to get the transform from the
   // fixed frame to the frame in the header of this VectorAtPosition message.
   Ogre::Vector3 arrowPosition;
   Ogre::Quaternion arrowOrientation;
 
   // Check if the position has an empty or the same frame as the vector
-  if (msg->position_frame_id.empty() || msg->position_frame_id == msg->header.frame_id)
+  if (current_vector_at_position_->position_frame_id.empty() || current_vector_at_position_->position_frame_id == current_vector_at_position_->header.frame_id)
   {
     // Get arrow position and orientation
-    if(!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp, arrowPosition, arrowOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id, current_vector_at_position_->header.stamp, arrowPosition, arrowOrientation))
     {
-      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", msg->position_frame_id.c_str(), qPrintable(fixed_frame_));
+      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
   }
@@ -146,21 +147,21 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
   {
     // Get arrow position
     Ogre::Quaternion dummyOrientation;
-    if(!context_->getFrameManager()->getTransform(msg->position_frame_id, msg->header.stamp, arrowPosition, dummyOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->position_frame_id, current_vector_at_position_->header.stamp, arrowPosition, dummyOrientation))
     {
-      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", msg->position_frame_id.c_str(), qPrintable(fixed_frame_));
+      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
 
     // Get arrow orientation
     Ogre::Vector3 dummyPosition;
-    if(!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp, dummyPosition, arrowOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id, current_vector_at_position_->header.stamp, dummyPosition, arrowOrientation))
     {
-      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", msg->header.frame_id.c_str(), qPrintable(fixed_frame_));
+      ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->header.frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
   }
-  arrowPosition += Ogre::Vector3(msg->position.x, msg->position.y, msg->position.z);
+  arrowPosition += Ogre::Vector3(current_vector_at_position_->position.x, current_vector_at_position_->position.y, current_vector_at_position_->position.z);
 
   // We are keeping a circular buffer of visual pointers. This gets
   // the next one, or creates and stores it if the buffer is not full
@@ -175,7 +176,7 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
   }
 
   // Now set or update the contents of the chosen visual.
-  visual->setMessage(msg);
+  visual->setMessage(current_vector_at_position_);
   visual->setArrowPosition(arrowPosition); // position is taken from position in msg
   visual->setArrowOrientation(arrowOrientation); // orientation is taken from vector in msg
   visual->setScalingFactors(lengthScale_, widthScale_);
@@ -184,6 +185,13 @@ void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition:
 
   // And send it to the end of the circular buffer
   visuals_.push_back(visual);
+}
+
+// This is our callback to handle an incoming message.
+void VectorAtPositionDisplay::processMessage(const kindr_msgs::VectorAtPosition::ConstPtr& msg)
+{
+  current_vector_at_position_ = msg;
+  Q_EMIT updateVectorAtPositionSignal();
 }
 
 } // kindr_rviz_plugins
