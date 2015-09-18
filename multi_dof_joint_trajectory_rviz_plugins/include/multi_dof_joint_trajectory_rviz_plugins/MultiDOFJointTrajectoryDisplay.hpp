@@ -40,6 +40,8 @@ protected:
   virtual void onInitialize();
   virtual void reset();
 
+Q_SIGNALS:
+  void updateTrajectorySignal();
 
 private Q_SLOTS:
   void setShowConnection();
@@ -68,6 +70,7 @@ private Q_SLOTS:
 
   void setHistoryLength();
 
+  void updateTrajectory();
 
 private:
   void processMessage(const trajectory_msgs::MultiDOFJointTrajectory::ConstPtr& msg);
@@ -149,6 +152,8 @@ private:
 
   float font_size_;
   bool show_text_;
+
+  trajectory_msgs::MultiDOFJointTrajectory::ConstPtr current_trajectory_;
 };
 
 } // multi_dof_joint_trajectory_rviz_plugins

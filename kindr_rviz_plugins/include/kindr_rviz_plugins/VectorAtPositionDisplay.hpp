@@ -65,12 +65,17 @@ protected:
   // A helper to clear this display back to the initial state.
   virtual void reset();
 
+Q_SIGNALS:
+  void updateVectorAtPositionSignal();
+
   // These Qt slots get connected to signals indicating changes in the user-editable properties.
 private Q_SLOTS:
   void updateScale();
   void updateShowText();
   void updateColorAndAlpha();
   void updateHistoryLength();
+
+  void updateVectorAtPosition();
 
   // Function to handle an incoming ROS message.
 private:
@@ -94,6 +99,8 @@ private:
   bool showText_;
   Ogre::ColourValue color_;
   float alpha_;
+
+  kindr_msgs::VectorAtPosition::ConstPtr current_vector_at_position_;
 };
 
 } // kindr_rviz_plugins
