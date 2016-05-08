@@ -21,12 +21,15 @@ catkin_package(
    rviz
    trajectory_msgs
 )
-include_directories(include ${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
 ## This plugin includes Qt widgets, so we must include Qt like so:
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  find_package(Qt5Widgets REQUIRED)
+else()
+  find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+  include(${QT_USE_FILE})
+endif()
 
 ## I prefer the Qt signals and slots to avoid defining "emit", "slots",
 ## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
@@ -34,27 +37,46 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 ## Here we specify which header files need to be run through "moc",
 ## Qt's meta-object compiler.
-qt4_wrap_cpp(MOC_FILES
+set(multi_dof_joint_trajectory_rviz_plugins_HDRS
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryDisplay.hpp
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointConnectionVisual.hpp
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointVisual.hpp
 )
 
-## Here we specify the list of source files, including the output of
-## the previous command which is stored in ``${MOC_FILES}``.
-set(SOURCE_FILES
+set(multi_dof_joint_trajectory_rviz_plugins_SRCS
   src/MultiDOFJointTrajectoryDisplay.cpp
   src/MultiDOFJointTrajectoryPointConnectionVisual.cpp
   src/MultiDOFJointTrajectoryPointVisual.cpp
-  ${MOC_FILES}
 )
 
-## An rviz plugin is just a shared library, so here we declare the
-## library to be called ``${PROJECT_NAME}`` (which is
-## "rviz_plugin_tutorials", or whatever your version of this project
-## is called) and specify the list of source files we collected above
-## in ``${SOURCE_FILES}``.
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  qt5_wrap_cpp(multi_dof_joint_trajectory_rviz_plugins_MOCS
+    ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
+  )
+else()
+  qt4_wrap_cpp(multi_dof_joint_trajectory_rviz_plugins_MOCS
+    ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
+  )
+endif()
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+add_library(${PROJECT_NAME}
+  ${multi_dof_joint_trajectory_rviz_plugins_SRCS}
+  ${multi_dof_joint_trajectory_rviz_plugins_MOCS}
+)
+target_link_libraries(${PROJECT_NAME}
+  ${QT_LIBRARIES} ${catkin_LIBRARIES}
+)
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+else()
+  target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+endif()
+
+
 
 # Specify dependencies on automatically generated service files
 #add_dependencies(${PROJECT_NAME})
@@ -68,7 +90,6 @@ add_library(${PROJECT_NAME} ${SOURCE_FILES})
 ## library and names the actual file something like
 ## "librviz_plugin_tutorials.so", or whatever is appropriate for your
 ## particular OS.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES})
 ## END_TUTORIAL
 
 ## Install rules
