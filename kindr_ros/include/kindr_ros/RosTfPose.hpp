@@ -64,17 +64,27 @@ inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::Hom
   pose.getPosition() = position;
 }
 
+template<typename Rotation_>
+inline static void convertToRosTfQuaternion(tf::Quaternion& tfQuat, const Rotation_& rotation) {
+  const auto quat = kindr::RotationQuaternion<typename Rotation_::Scalar>(rotation);
+  tfQuat = tf::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
+}
+
 template<typename PrimType_, typename Position_, typename Rotation_>
 inline static void convertToRosTf(const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose, tf::Transform& tfTransform)
 {
   // This is the definition of TF.
   typedef kindr::RotationMatrix<PrimType_> RotationMatrixTfLike;
-
   Eigen::Matrix3d rotationMatrix(RotationMatrixTfLike(pose.getRotation()).matrix());
   tf::Matrix3x3 tfRotationMatrix(rotationMatrix(0,0), rotationMatrix(0,1), rotationMatrix(0,2),
                                  rotationMatrix(1,0), rotationMatrix(1,1), rotationMatrix(1,2),
                                  rotationMatrix(2,0), rotationMatrix(2,1), rotationMatrix(2,2));
   tfTransform.setBasis(tfRotationMatrix);
+
+  // less accurate by quaternion:
+//  tf::Quaternion tfQuat;
+//  convertToRosTfQuaternion(tfQuat, pose.getRotation());
+//  tfTransform.setRotation(tfQuat);
 
   tfTransform.setOrigin(tf::Vector3(pose.getPosition().x(),
                                     pose.getPosition().y(),

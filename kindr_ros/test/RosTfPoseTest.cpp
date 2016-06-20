@@ -44,8 +44,8 @@
 
 TEST(RosTfPoseEigen, convertFromRosTf)
 {
-  const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.231);
-  const kindr::RotationMatrixPD referenceRotationMatrix(referenceQuaternion);
+  const kindr::RotationQuaternionD referenceQuaternion(0.949, 0.133, 0.169, 0.231);
+  const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
   const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
@@ -68,8 +68,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
   kindr_ros::convertFromRosTf(tfTransform, pose);
-  kindr::expectNear(kindr::RotationMatrixPD(pose.getRotation()).toImplementation(),
-                     referenceRotationMatrix.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(kindr::RotationMatrixD(pose.getRotation()).matrix(),
+                     referenceRotationMatrix.matrix(), 1e-4, KINDR_SOURCE_FILE_POS);
   kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // Identity transformation
@@ -141,8 +141,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
 
 TEST(RosTfPoseEigen, convertToRosTf)
 {
-  const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.358);
-  const kindr::RotationMatrixPD referenceRotationMatrix(referenceQuaternion);
+  const kindr::RotationQuaternionD referenceQuaternion(0.113, 0.071, -0.924, 0.358);
+  const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const kindr::Position3D referenceTranslation(-22.4, 0.31, -4.6);
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
@@ -218,8 +218,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
 
 TEST(RosTfPoseEigen, convertTwoWays)
 {
-  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
-  const kindr::RotationMatrixPD referenceRotationMatrix(referenceQuaternion);
+  const kindr::RotationQuaternionD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
+  const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(13.3, 2.6, -7.6);
   const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
