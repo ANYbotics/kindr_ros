@@ -15,18 +15,26 @@
 namespace kindr {
 
 template<>
-class ConversionTraits<tf::Quaternion, tf::Vector3, double> {
+class RotationConversion<tf::Quaternion, tf::Vector3, double> {
   typedef tf::Quaternion Rotation;
   typedef tf::Vector3 Vector;
  public:
 
-  inline static void convertKindrRotationQuaternionToRotation(Rotation& out, const kindr::RotationQuaternion<double>& in) {
+  inline static void convertToOtherRotation(Rotation& out, const kindr::RotationQuaternion<double>& in) {
     kindr::RotationQuaternion<double> in2 = in;
     out = tf::Quaternion(in2.x(), in2.y(), in2.z(), in2.w());
   }
 
-  inline static void convertVelocityVector(Vector& out, Rotation& rot, const Eigen::Matrix<double,3,1>& in) {
+  inline static void convertToKindr(kindr::RotationQuaternion<double>& out, Rotation& in) {
+    out = kindr::RotationQuaternion<double>(in.w(), in.x(), in.y(), in.z());
+  }
+
+  inline static void convertToVelocityVector(Vector& out, Rotation& rot, const Eigen::Matrix<double,3,1>& in) {
     out = tf::Vector3(in.x(), in.y(), in.z());
+  }
+
+  inline static void concatenate(Rotation& res, const Rotation& rot1, const Rotation& rot2) {
+    res = rot2*rot1;
   }
 
   inline static void getRotationMatrixFromRotation(Eigen::Matrix3d& rotationMatrix, const Rotation& quaternion) {
@@ -46,34 +54,32 @@ class ConversionTraits<tf::Quaternion, tf::Vector3, double> {
     A_r.z() = A_v.z();
   }
 
-//  inline static void boxPlus(Rotation& res, const Rotation& rot, const tf::Vector3& velocity) {
-//    // todo
-//    res = tf::Quaternion(0, 1,0, 0);
-//  }
-
-  inline static void testRotation(const Rotation& expected, const Rotation& actual) {
-    EXPECT_NEAR(expected.w(), actual.w(), 1.0e-6);
-    EXPECT_NEAR(expected.x(), actual.x(), 1.0e-6);
-    EXPECT_NEAR(expected.y(), actual.y(), 1.0e-6);
-    EXPECT_NEAR(expected.z(), actual.z(), 1.0e-6);
-  }
-
 };
 
 
 template<>
-class ConversionTraits<tf::Matrix3x3, tf::Vector3, double> {
+class RotationConversion<tf::Matrix3x3, tf::Vector3, double> {
   typedef tf::Matrix3x3 Rotation;
   typedef tf::Vector3 Vector;
  public:
 
-  inline static void convertKindrRotationQuaternionToRotation(Rotation& out, const kindr::RotationQuaternion<double>& in) {
+  inline static void convertToOtherRotation(Rotation& out, const kindr::RotationQuaternion<double>& in) {
     kindr::RotationQuaternion<double> in2 = in;
     out.setRotation(tf::Quaternion(in2.x(), in2.y(), in2.z(), in2.w()));
   }
 
-  inline static void convertVelocityVector(Vector& out, Rotation& rot, const Eigen::Matrix<double,3,1>& in) {
+  inline static void convertToKindr(kindr::RotationQuaternion<double>& out, Rotation& matrix) {
+    tf::Quaternion quat;
+    matrix.getRotation(quat);
+    out = kindr::RotationQuaternion<double>(quat.w(), quat.x(), quat.y(), quat.z());
+  }
+
+  inline static void convertToOtherVelocityVector(Vector& out, Rotation& rot, const Eigen::Matrix<double,3,1>& in) {
     out = tf::Vector3(in.x(), in.y(), in.z());
+  }
+
+  inline static void concatenate(Rotation& res, const Rotation& rot1, const Rotation& rot2) {
+    res = rot2*rot1;
   }
 
   inline static void getRotationMatrixFromRotation(Eigen::Matrix3d& rotationMatrix, const Rotation& matrix) {
@@ -90,19 +96,6 @@ class ConversionTraits<tf::Matrix3x3, tf::Vector3, double> {
     A_r.x() = A_v.x();
     A_r.y() = A_v.y();
     A_r.z() = A_v.z();
-  }
-
-//  inline static void boxPlus(Rotation& res, const Rotation& rot, const tf::Vector3& velocity) {
-//    // todo
-//    res = tf::Quaternion(0, 1,0, 0);
-//  }
-
-  inline static void testRotation(const Rotation& expected, const Rotation& actual) {
-    for (int i=0; i<3; i++) {
-      EXPECT_NEAR(expected.getRow(i).x(), actual.getRow(i).x(), 1.0e-6);
-      EXPECT_NEAR(expected.getRow(i).y(), actual.getRow(i).y(), 1.0e-6);
-      EXPECT_NEAR(expected.getRow(i).z(), actual.getRow(i).z(), 1.0e-6);
-    }
   }
 };
 
