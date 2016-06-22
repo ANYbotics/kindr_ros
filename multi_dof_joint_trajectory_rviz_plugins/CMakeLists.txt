@@ -11,7 +11,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
    rviz
    trajectory_msgs
+   rqt_gui_cpp
 )
+
 catkin_package(
  INCLUDE_DIRS
    include
@@ -20,7 +22,9 @@ catkin_package(
  CATKIN_DEPENDS
    rviz
    trajectory_msgs
+   rqt_gui_cpp
 )
+
 link_directories(${catkin_LIBRARY_DIRS})
 
 ## This plugin includes Qt widgets, so we must include Qt like so:
