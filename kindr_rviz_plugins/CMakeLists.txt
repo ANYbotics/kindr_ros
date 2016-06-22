@@ -11,12 +11,13 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
   rviz
   kindr_msgs
+  rqt_gui_cpp
 )
 
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS kindr_msgs
+ CATKIN_DEPENDS kindr_msgs rqt_gui_cpp
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})
