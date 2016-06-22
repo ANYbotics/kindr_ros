@@ -4,18 +4,31 @@
 ## First start with some standard catkin stuff.
 cmake_minimum_required(VERSION 2.8.3)
 project(kindr_rviz_plugins)
-find_package(catkin REQUIRED COMPONENTS rviz kindr_msgs)
+
+# Set compiler flags
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+
+find_package(catkin REQUIRED COMPONENTS
+  rviz
+  kindr_msgs
+)
+
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
  CATKIN_DEPENDS kindr_msgs
 )
+
 include_directories(include ${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
 ## This plugin includes Qt widgets, so we must include Qt like so:
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  find_package(Qt5Widgets REQUIRED)
+else()
+  find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+  include(${QT_USE_FILE})
+endif()
 
 ## I prefer the Qt signals and slots to avoid defining "emit", "slots",
 ## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
@@ -23,29 +36,38 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 ## Here we specify which header files need to be run through "moc",
 ## Qt's meta-object compiler.
-qt4_wrap_cpp(MOC_FILES
+set(kindr_rviz_plugins_HDRS
   include/kindr_rviz_plugins/VectorAtPositionDisplay.hpp
   include/kindr_rviz_plugins/VectorAtPositionVisual.hpp
 )
 
 ## Here we specify the list of source files, including the output of
 ## the previous command which is stored in ``${MOC_FILES}``.
-set(SOURCE_FILES
+set(kindr_rviz_plugins_SRCS
   src/VectorAtPositionDisplay.cpp
   src/VectorAtPositionVisual.cpp
-  ${MOC_FILES}
 )
+
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  qt5_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS})
+else()
+  qt4_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS})
+endif()
 
 ## An rviz plugin is just a shared library, so here we declare the
 ## library to be called ``${PROJECT_NAME}`` (which is
 ## "rviz_plugin_tutorials", or whatever your version of this project
 ## is called) and specify the list of source files we collected above
 ## in ``${SOURCE_FILES}``.
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+add_library(${PROJECT_NAME}
+  ${kindr_rviz_plugins_SRCS}
+  ${kindr_rviz_plugins_HDRS}
+  ${kindr_rviz_plugins_MOCS}
+)
 
 # Specify dependencies on automatically generated service files
 add_dependencies(${PROJECT_NAME}
-  kindr_msgs_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
 )
 
 ## Link the library with whatever Qt libraries have been defined by
@@ -57,9 +79,18 @@ add_dependencies(${PROJECT_NAME}
 ## library and names the actual file something like
 ## "librviz_plugin_tutorials.so", or whatever is appropriate for your
 ## particular OS.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+  ${QT_LIBRARIES}
+  ${catkin_LIBRARIES}
+)
+
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
+else()
+  target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+endif()
+
 ## END_TUTORIAL
-add_dependencies(${PROJECT_NAME} kindr_msgs)
 
 ## Install rules
 
