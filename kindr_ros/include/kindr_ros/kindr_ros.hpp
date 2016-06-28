@@ -34,7 +34,7 @@
 
 #pragma once
 
-#include "kindr_ros/RosTfPose.hpp"
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
-#include "kindr_ros/RosGeometryMsgRotation.hpp"
 #include "kindr_ros/RosGeometryMsgPose.hpp"
+#include "kindr_ros/RosGeometryMsgRotation.hpp"
+#include "kindr_ros/RosTfPose.hpp"

@@ -28,17 +28,22 @@
 
 #pragma once
 
-#include "kindr/rotations/Rotation.hpp"
 
-// ROS
+// kindr
+#include <kindr/Core>
+
+// ros
 #include <ros/ros.h>
 #include <geometry_msgs/Quaternion.h>
 
+
 namespace kindr_ros {
 
+
 template<typename PrimType_>
-inline static void convertFromRosGeometryMsg(const geometry_msgs::Quaternion& geometryQuaternionMsg,
-                                      kindr::RotationQuaternion<PrimType_>& rotationQuaternion)
+inline static void convertFromRosGeometryMsg(
+    const geometry_msgs::Quaternion& geometryQuaternionMsg,
+    kindr::RotationQuaternion<PrimType_>& rotationQuaternion)
 {
   rotationQuaternion.setValues(static_cast<PrimType_>(geometryQuaternionMsg.w),
                                static_cast<PrimType_>(geometryQuaternionMsg.x),
@@ -47,8 +52,9 @@ inline static void convertFromRosGeometryMsg(const geometry_msgs::Quaternion& ge
 }
 
 template<typename PrimType_>
-inline static void convertToRosGeometryMsg(const kindr::RotationQuaternion<PrimType_>& rotationQuaternion,
-                                    geometry_msgs::Quaternion& geometryQuaternionMsg)
+inline static void convertToRosGeometryMsg(
+    const kindr::RotationQuaternion<PrimType_>& rotationQuaternion,
+    geometry_msgs::Quaternion& geometryQuaternionMsg)
 {
   geometryQuaternionMsg.w = static_cast<double>(rotationQuaternion.w());
   geometryQuaternionMsg.x = static_cast<double>(rotationQuaternion.x());
@@ -56,4 +62,4 @@ inline static void convertToRosGeometryMsg(const kindr::RotationQuaternion<PrimT
   geometryQuaternionMsg.z = static_cast<double>(rotationQuaternion.z());
 }
 
-} // namespace kindr
+} // namespace kindr_ros

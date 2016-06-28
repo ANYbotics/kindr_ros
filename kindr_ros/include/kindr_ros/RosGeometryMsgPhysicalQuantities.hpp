@@ -28,19 +28,24 @@
 
 #pragma once
 
-#include "kindr/phys_quant/PhysicalQuantities.hpp"
 
-// ROS
+// kindr
+#include <kindr/Core>
+
+// ros
 #include <ros/ros.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Point32.h>
 
+
 namespace kindr_ros {
 
+
 template<enum kindr::PhysicalType PhysicalType_, typename PrimType_>
-inline static void convertFromRosGeometryMsg(const geometry_msgs::Vector3& geometryVector3Msg,
-                                      kindr::Vector<PhysicalType_, PrimType_, 3>& vector)
+inline static void convertFromRosGeometryMsg(
+    const geometry_msgs::Vector3& geometryVector3Msg,
+    kindr::Vector<PhysicalType_, PrimType_, 3>& vector)
 {
   vector.x() = static_cast<PrimType_>(geometryVector3Msg.x);
   vector.y() = static_cast<PrimType_>(geometryVector3Msg.y);
@@ -48,8 +53,9 @@ inline static void convertFromRosGeometryMsg(const geometry_msgs::Vector3& geome
 }
 
 template<enum kindr::PhysicalType PhysicalType_, typename PrimType_>
-inline static void convertToRosGeometryMsg(const kindr::Vector<PhysicalType_, PrimType_, 3>& vector,
-                                    geometry_msgs::Vector3& geometryVector3Msg)
+inline static void convertToRosGeometryMsg(
+    const kindr::Vector<PhysicalType_, PrimType_, 3>& vector,
+    geometry_msgs::Vector3& geometryVector3Msg)
 {
   geometryVector3Msg.x = static_cast<double>(vector.x());
   geometryVector3Msg.y = static_cast<double>(vector.y());
@@ -57,8 +63,9 @@ inline static void convertToRosGeometryMsg(const kindr::Vector<PhysicalType_, Pr
 }
 
 template <typename PrimType_>
-inline static void convertFromRosGeometryMsg(const geometry_msgs::Point32& geometryPoint32Msg,
-                                      kindr::Position<PrimType_, 3>& position)
+inline static void convertFromRosGeometryMsg(
+    const geometry_msgs::Point32& geometryPoint32Msg,
+    kindr::Position<PrimType_, 3>& position)
 {
   position.x() = static_cast<PrimType_>(geometryPoint32Msg.x);
   position.y() = static_cast<PrimType_>(geometryPoint32Msg.y);
@@ -66,8 +73,9 @@ inline static void convertFromRosGeometryMsg(const geometry_msgs::Point32& geome
 }
 
 template <typename PrimType_>
-inline static void convertToRosGeometryMsg(const kindr::Position<PrimType_, 3>& position,
-                                    geometry_msgs::Point32& geometryPoint32Msg)
+inline static void convertToRosGeometryMsg(
+    const kindr::Position<PrimType_, 3>& position,
+    geometry_msgs::Point32& geometryPoint32Msg)
 {
   geometryPoint32Msg.x = static_cast<float>(position.x());
   geometryPoint32Msg.y = static_cast<float>(position.y());
@@ -75,8 +83,9 @@ inline static void convertToRosGeometryMsg(const kindr::Position<PrimType_, 3>& 
 }
 
 template <typename PrimType_>
-inline static void convertFromRosGeometryMsg(const geometry_msgs::Point& geometryPointMsg,
-                                      kindr::Position<PrimType_, 3>& position)
+inline static void convertFromRosGeometryMsg(
+    const geometry_msgs::Point& geometryPointMsg,
+    kindr::Position<PrimType_, 3>& position)
 {
   position.x() = static_cast<PrimType_>(geometryPointMsg.x);
   position.y() = static_cast<PrimType_>(geometryPointMsg.y);
@@ -84,12 +93,14 @@ inline static void convertFromRosGeometryMsg(const geometry_msgs::Point& geometr
 }
 
 template <typename PrimType_>
-inline static void convertToRosGeometryMsg(const kindr::Position<PrimType_, 3>& position,
-                                    geometry_msgs::Point& geometryPointMsg)
+inline static void convertToRosGeometryMsg(
+    const kindr::Position<PrimType_, 3>& position,
+    geometry_msgs::Point& geometryPointMsg)
 {
   geometryPointMsg.x = static_cast<double>(position.x());
   geometryPointMsg.y = static_cast<double>(position.y());
   geometryPointMsg.z = static_cast<double>(position.z());
 }
 
-} // namespace kindr
+
+} // namespace kindr_ros

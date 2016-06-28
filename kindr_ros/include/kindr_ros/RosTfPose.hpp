@@ -28,14 +28,17 @@
 
 #pragma once
 
-#include "kindr/poses/Pose.hpp"
-#include "kindr/rotations/Rotation.hpp"
 
-// ROS
+// kindr
+#include <kindr/Core>
+
+// ros
 #include <ros/ros.h>
 #include <tf/LinearMath/Transform.h>
 
+
 namespace kindr_ros {
+
 
 template<typename PrimType_, typename Position_, typename Rotation_>
 inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose)
@@ -92,4 +95,4 @@ inline static void convertToRosTf(const kindr::HomogeneousTransformation<PrimTyp
 }
 
 
-} // namespace kindr
+} // namespace kindr_ros
