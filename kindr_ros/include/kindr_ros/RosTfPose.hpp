@@ -68,7 +68,8 @@ inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::Hom
 }
 
 template<typename Rotation_>
-inline static void convertToRosTfQuaternion(tf::Quaternion& tfQuat, const Rotation_& rotation) {
+inline static void convertToRosTfQuaternion(tf::Quaternion& tfQuat, const Rotation_& rotation)
+{
   const auto quat = kindr::RotationQuaternion<typename Rotation_::Scalar>(rotation);
   tfQuat = tf::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
 }
