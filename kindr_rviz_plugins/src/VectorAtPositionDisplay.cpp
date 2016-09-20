@@ -161,7 +161,9 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
       return;
     }
   }
-  arrowPosition += Ogre::Vector3(current_vector_at_position_->position.x, current_vector_at_position_->position.y, current_vector_at_position_->position.z);
+  Ogre::Matrix3 rotMat;
+  arrowOrientation.ToRotationMatrix(rotMat);
+  arrowPosition +=  rotMat*Ogre::Vector3(current_vector_at_position_->position.x, current_vector_at_position_->position.y, current_vector_at_position_->position.z);
 
   // We are keeping a circular buffer of visual pointers. This gets
   // the next one, or creates and stores it if the buffer is not full
