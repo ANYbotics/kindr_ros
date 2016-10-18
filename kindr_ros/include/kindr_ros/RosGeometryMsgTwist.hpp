@@ -25,17 +25,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
 */
-/*
- * kindr_ros.hpp
- *
- *  Created on: Jun 15, 2016
- *      Author: gech
- */
 
 #pragma once
 
+
+// kindr
+#include <kindr/Core>
+
+// ros
+#include <geometry_msgs/Twist.h>
+
+// kindr ros
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
-#include "kindr_ros/RosGeometryMsgPose.hpp"
-#include "kindr_ros/RosGeometryMsgTwist.hpp"
-#include "kindr_ros/RosGeometryMsgRotation.hpp"
-#include "kindr_ros/RosTfPose.hpp"
+
+
+namespace kindr_ros {
+
+
+template<typename PrimType_, typename PositionDiff_, typename RotationDiff_>
+inline static void convertFromRosGeometryMsg(
+    const geometry_msgs::Twist& geometryTwistMsg,
+    kindr::Twist<PrimType_, PositionDiff_, RotationDiff_>& twist)
+{
+  convertFromRosGeometryMsg(geometryTwistMsg.linear, twist.getTranslationalVelocity());
+  convertFromRosGeometryMsg(geometryTwistMsg.angular, twist.getRotationalVelocity());
+}
+
+template<typename PrimType_, typename PositionDiff_, typename RotationDiff_>
+inline static void convertToRosGeometryMsg(
+    const kindr::Twist<PrimType_, PositionDiff_, RotationDiff_>& twist,
+    geometry_msgs::Twist& geometryTwistMsg)
+{
+  convertToRosGeometryMsg(twist.getTranslationalVelocity(), geometryTwistMsg.linear);
+  convertToRosGeometryMsg(twist.getRotationalVelocity(), geometryTwistMsg.angular);
+}
+
+
+} // namespace kindr_ros
