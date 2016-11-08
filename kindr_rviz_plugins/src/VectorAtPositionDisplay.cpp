@@ -130,24 +130,32 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
 
   // Here we call the rviz::FrameManager to get the transform from the
   // fixed frame to the frame in the header of this VectorAtPosition message.
-  Ogre::Vector3 arrowPosition;
-  Ogre::Quaternion arrowOrientation;
+  Ogre::Vector3 positionFixedToArrowInFixedFrame;
+  Ogre::Quaternion orientationArrowFrameToFixedFrame;
+  Ogre::Quaternion orientationPositionFrameToFixedFrame;
 
   // Check if the position has an empty or the same frame as the vector
   if (current_vector_at_position_->position_frame_id.empty() || current_vector_at_position_->position_frame_id == current_vector_at_position_->header.frame_id)
   {
     // Get arrow position and orientation
-    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id, current_vector_at_position_->header.stamp, arrowPosition, arrowOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id,
+                                                  current_vector_at_position_->header.stamp,
+                                                  positionFixedToArrowInFixedFrame,
+                                                  orientationArrowFrameToFixedFrame))
     {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
+
+    orientationPositionFrameToFixedFrame = orientationArrowFrameToFixedFrame;
   }
   else
   {
     // Get arrow position
-    Ogre::Quaternion dummyOrientation;
-    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->position_frame_id, current_vector_at_position_->header.stamp, arrowPosition, dummyOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->position_frame_id,
+                                                  current_vector_at_position_->header.stamp,
+                                                  positionFixedToArrowInFixedFrame,
+                                                  orientationPositionFrameToFixedFrame))
     {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
       return;
@@ -155,15 +163,21 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
 
     // Get arrow orientation
     Ogre::Vector3 dummyPosition;
-    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id, current_vector_at_position_->header.stamp, dummyPosition, arrowOrientation))
+    if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id,
+                                                  current_vector_at_position_->header.stamp,
+                                                  dummyPosition,
+                                                  orientationArrowFrameToFixedFrame))
     {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->header.frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
   }
+
   Ogre::Matrix3 rotMat;
-  arrowOrientation.ToRotationMatrix(rotMat);
-  arrowPosition +=  rotMat*Ogre::Vector3(current_vector_at_position_->position.x, current_vector_at_position_->position.y, current_vector_at_position_->position.z);
+  orientationPositionFrameToFixedFrame.ToRotationMatrix(rotMat);
+  positionFixedToArrowInFixedFrame += rotMat*Ogre::Vector3(current_vector_at_position_->position.x,
+                                                           current_vector_at_position_->position.y,
+                                                           current_vector_at_position_->position.z);
 
   // We are keeping a circular buffer of visual pointers. This gets
   // the next one, or creates and stores it if the buffer is not full
@@ -179,8 +193,8 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
 
   // Now set or update the contents of the chosen visual.
   visual->setMessage(current_vector_at_position_);
-  visual->setArrowPosition(arrowPosition); // position is taken from position in msg
-  visual->setArrowOrientation(arrowOrientation); // orientation is taken from vector in msg
+  visual->setArrowPosition(positionFixedToArrowInFixedFrame); // position is taken from position in msg
+  visual->setArrowOrientation(orientationArrowFrameToFixedFrame); // orientation is taken from vector in msg
   visual->setScalingFactors(lengthScale_, widthScale_);
   visual->setShowText(showText_);
   visual->setColor(color_);
