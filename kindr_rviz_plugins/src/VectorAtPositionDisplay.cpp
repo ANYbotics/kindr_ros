@@ -130,6 +130,7 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
 
   // Here we call the rviz::FrameManager to get the transform from the
   // fixed frame to the frame in the header of this VectorAtPosition message.
+  Ogre::Vector3 positionFixedToPositionFrameInFixedFrame;
   Ogre::Vector3 positionFixedToArrowInFixedFrame;
   Ogre::Quaternion orientationArrowFrameToFixedFrame;
   Ogre::Quaternion orientationPositionFrameToFixedFrame;
@@ -137,10 +138,12 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
   // Check if the position has an empty or the same frame as the vector
   if (current_vector_at_position_->position_frame_id.empty() || current_vector_at_position_->position_frame_id == current_vector_at_position_->header.frame_id)
   {
+    // Arrow and position frame coincide.
+
     // Get arrow position and orientation
     if(!context_->getFrameManager()->getTransform(current_vector_at_position_->header.frame_id,
                                                   current_vector_at_position_->header.stamp,
-                                                  positionFixedToArrowInFixedFrame,
+                                                  positionFixedToPositionFrameInFixedFrame,
                                                   orientationArrowFrameToFixedFrame))
     {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
@@ -171,13 +174,15 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->header.frame_id.c_str(), qPrintable(fixed_frame_));
       return;
     }
+
   }
 
   Ogre::Matrix3 rotMat;
   orientationPositionFrameToFixedFrame.ToRotationMatrix(rotMat);
-  positionFixedToArrowInFixedFrame += rotMat*Ogre::Vector3(current_vector_at_position_->position.x,
-                                                           current_vector_at_position_->position.y,
-                                                           current_vector_at_position_->position.z);
+  positionFixedToArrowInFixedFrame = positionFixedToPositionFrameInFixedFrame
+                                   + rotMat*Ogre::Vector3(current_vector_at_position_->position.x,
+                                                          current_vector_at_position_->position.y,
+                                                          current_vector_at_position_->position.z);
 
   // We are keeping a circular buffer of visual pointers. This gets
   // the next one, or creates and stores it if the buffer is not full
