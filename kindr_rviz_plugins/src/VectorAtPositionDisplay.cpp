@@ -157,7 +157,7 @@ void VectorAtPositionDisplay::updateVectorAtPosition() {
     // Get arrow position
     if(!context_->getFrameManager()->getTransform(current_vector_at_position_->position_frame_id,
                                                   current_vector_at_position_->header.stamp,
-                                                  positionFixedToArrowInFixedFrame,
+                                                  positionFixedToPositionFrameInFixedFrame,
                                                   orientationPositionFrameToFixedFrame))
     {
       ROS_ERROR("Error transforming from frame '%s' to frame '%s'", current_vector_at_position_->position_frame_id.c_str(), qPrintable(fixed_frame_));
