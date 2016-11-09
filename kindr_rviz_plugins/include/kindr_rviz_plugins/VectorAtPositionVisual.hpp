@@ -14,6 +14,7 @@ class Quaternion;
 
 namespace rviz {
 class Arrow;
+class BillboardLine;
 class MovableText;
 } // rviz
 
@@ -62,12 +63,17 @@ public:
 protected:
   // The object implementing the actual arrow shape
   boost::shared_ptr<rviz::Arrow> arrow_;
+  boost::shared_ptr<rviz::Arrow> circleArrow_;
+  boost::shared_ptr<rviz::BillboardLine> circle_;
 
   // The object implementing the arrow description text
   boost::shared_ptr<rviz::MovableText> text_;
 
   // Store the name
   std::string name_;
+
+  // Store ogre vector and orientation
+  Ogre::Vector3 vector_;
 
   // Store the scaling factor and the length of the vector, so that it can be scale afterwards
   float length_;
@@ -76,13 +82,16 @@ protected:
 
   // Store show text
   bool showText_;
+  bool showTorque_;
 
   // Store the arrow color
   Ogre::ColourValue color_;
 
   // A SceneNode whose pose is set to match the coordinate frame of
   // the VectorAtPosition message header.
+  Ogre::SceneNode* scene_node_frame_;
   Ogre::SceneNode* scene_node_arrow_;
+  Ogre::SceneNode* scene_node_circle_;
   Ogre::SceneNode* scene_node_text_;
 
   // The SceneManager, kept here only so the destructor can ask it to
@@ -100,4 +109,3 @@ protected:
 };
 
 } // kindr_rviz_plugins
-
