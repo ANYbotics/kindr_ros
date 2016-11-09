@@ -82,7 +82,7 @@ VectorAtPositionVisual::~VectorAtPositionVisual()
 
 void VectorAtPositionVisual::setMessage(const kindr_msgs::VectorAtPosition::ConstPtr& msg)
 {
-  // Check if torque has to be published
+  // Check if type is torque
   showTorque_ = msg->type == msg->TYPE_TORQUE;
 
   // Set the name of the arrow.
@@ -150,13 +150,17 @@ void VectorAtPositionVisual::updateScaling()
 
   // Scale the circle arrow
   if(showTorque_) {
+    // Get orientation of arrow in scene
     Ogre::Vector3 axis_z(0,0,1);
     Ogre::Quaternion orientation = axis_z.getRotationTo(lengthScalingFactor_ * vector_);
     if ( orientation.isNaN() ) {orientation = Ogre::Quaternion::IDENTITY;}
+
+    // Set position and direction of the arrowhead
     circleArrow_->set(0, widthScalingFactor_*0.1, widthScalingFactor_*0.1*1.0, widthScalingFactor_*0.1*2.0);
     circleArrow_->setPosition(orientation * Ogre::Vector3(std::fabs(lengthScalingFactor_)*length_/4, 0, std::fabs(lengthScalingFactor_)*length_/2));
     circleArrow_->setDirection(orientation * Ogre::Vector3(0,1,0));
 
+    // Add circular arrow points
     circle_->clear();
     circle_->setLineWidth(widthScalingFactor_*0.05);
     for (int i = 4; i <= 32; i++) {
