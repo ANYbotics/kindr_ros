@@ -9,10 +9,9 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen3 REQUIRED)
 
 catkin_package(
-  INCLUDE_DIRS include 
+  INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
 #  LIBRARIES kindr_ros
   CATKIN_DEPENDS geometry_msgs tf
-  DEPENDS eigen
 )
 
 include_directories(include)
