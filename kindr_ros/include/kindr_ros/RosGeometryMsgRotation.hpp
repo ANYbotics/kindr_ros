@@ -33,7 +33,6 @@
 #include <kindr/Core>
 
 // ros
-#include <ros/ros.h>
 #include <geometry_msgs/Quaternion.h>
 
 

@@ -37,7 +37,6 @@
 #include "kindr/common/gtest_eigen.hpp"
 
 // ROS
-#include <ros/ros.h>
 #include <geometry_msgs/Pose.h>
 
 

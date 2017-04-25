@@ -33,7 +33,6 @@
 #include <kindr/Core>
 
 // ros
-#include <ros/ros.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Point32.h>

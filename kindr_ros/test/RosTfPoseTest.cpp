@@ -38,7 +38,6 @@
 #include "kindr/common/gtest_eigen.hpp"
 
 // ROS
-#include <ros/ros.h>
 #include <tf/LinearMath/Transform.h>
 
 
