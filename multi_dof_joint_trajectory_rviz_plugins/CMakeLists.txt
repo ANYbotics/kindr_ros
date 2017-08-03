@@ -35,8 +35,10 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 ## Here we specify which header files need to be run through "moc",
 ## Qt's meta-object compiler.
-set(multi_dof_joint_trajectory_rviz_plugins_HDRS
+set(multi_dof_joint_trajectory_rviz_plugins_HDRS_QT
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryDisplay.hpp
+)
+set(multi_dof_joint_trajectory_rviz_plugins_HDRS
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointConnectionVisual.hpp
   include/multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointVisual.hpp
 )
@@ -49,11 +51,11 @@ set(multi_dof_joint_trajectory_rviz_plugins_SRCS
 
 if(rviz_QT_VERSION VERSION_GREATER "5.0.0")
   qt5_wrap_cpp(multi_dof_joint_trajectory_rviz_plugins_MOCS
-    ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
+    ${multi_dof_joint_trajectory_rviz_plugins_HDRS_QT}
   )
 else()
   qt4_wrap_cpp(multi_dof_joint_trajectory_rviz_plugins_MOCS
-    ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
+    ${multi_dof_joint_trajectory_rviz_plugins_HDRS_QT}
   )
 endif()
 
@@ -64,6 +66,8 @@ include_directories(
 
 add_library(${PROJECT_NAME}
   ${multi_dof_joint_trajectory_rviz_plugins_SRCS}
+  ${multi_dof_joint_trajectory_rviz_plugins_HDRS_QT}
+  ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
   ${multi_dof_joint_trajectory_rviz_plugins_MOCS}
 )
 

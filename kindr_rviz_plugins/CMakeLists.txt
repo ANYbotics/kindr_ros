@@ -40,8 +40,10 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 ## Here we specify which header files need to be run through "moc",
 ## Qt's meta-object compiler.
-set(kindr_rviz_plugins_HDRS
+set(kindr_rviz_plugins_HDRS_QT
   include/kindr_rviz_plugins/VectorAtPositionDisplay.hpp
+)
+set(kindr_rviz_plugins_HDRS
   include/kindr_rviz_plugins/VectorAtPositionVisual.hpp
 )
 
@@ -53,13 +55,14 @@ set(kindr_rviz_plugins_SRCS
 )
 
 if(rviz_QT_VERSION VERSION_GREATER "5.0.0")
-  qt5_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS})
+  qt5_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS_QT})
 else()
-  qt4_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS})
+  qt4_wrap_cpp(kindr_rviz_plugins_MOCS ${kindr_rviz_plugins_HDRS_QT})
 endif()
 
 add_library(${PROJECT_NAME}
   ${kindr_rviz_plugins_SRCS}
+  ${kindr_rviz_plugins_HDRS_QT}
   ${kindr_rviz_plugins_HDRS}
   ${kindr_rviz_plugins_MOCS}
 )
