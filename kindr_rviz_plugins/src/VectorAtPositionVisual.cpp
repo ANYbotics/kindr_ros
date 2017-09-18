@@ -185,7 +185,7 @@ void VectorAtPositionVisual::updateText()
 {
   // add description text if available
   const std::string textString = showText_? name_ : "";
-  text_.reset(new rviz::MovableText(textString, "Arial", 0.1));
+  text_.reset(new rviz::MovableText(textString, "Liberation Sans", 0.1));
   text_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
   scene_node_text_->attachObject(text_.get());
 }
