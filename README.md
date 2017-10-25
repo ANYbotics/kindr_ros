@@ -1,5 +1,5 @@
 # kindr ros
 
-[![Build Status](http://rsl-ci.ethz.ch/buildStatus/icon?job=kindr_ros)](http://rsl-ci.ethz.ch/job/kindr_ros/)
+[![Build Status](https://ci.leggedrobotics.com/buildStatus/icon?job=github_leggedrobotics/kindr_ros/master)](https://ci.leggedrobotics.com/job/github_leggedrobotics/job/kindr_ros/job/master/)
 
 ROS wrappers for kindr
