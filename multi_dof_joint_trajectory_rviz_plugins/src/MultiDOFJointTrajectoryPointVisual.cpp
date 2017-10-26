@@ -128,7 +128,9 @@ MultiDOFJointTrajectoryPointVisual::MultiDOFJointTrajectoryPointVisual(
     }
 
     // text
-    texts_.push_back(boost::shared_ptr<rviz::MovableText>(new rviz::MovableText(captions_[i], "Arial", getCharacterHeight())));
+    auto text = boost::shared_ptr<rviz::MovableText>(new rviz::MovableText(captions_[i]));
+    text->setCharacterHeight(getCharacterHeight());
+    texts_.push_back(text);
     texts_.back()->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_BELOW);
     transforms_position_.back()->attachObject(texts_.back().get());
   }
