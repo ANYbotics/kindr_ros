@@ -42,7 +42,6 @@ namespace kindr_ros {
 template<typename PrimType_, typename Position_, typename Rotation_>
 inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose)
 {
-  typedef kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_> Pose;
   typedef Position_ Position;
   typedef Rotation_ Rotation;
 
