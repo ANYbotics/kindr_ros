@@ -30,3 +30,7 @@
 # CLion
 .idea/
 
+# Eclipse
+.project
+.cproject
+.settings
