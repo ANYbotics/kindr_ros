@@ -43,7 +43,7 @@
 
 TEST(RosTfPoseEigen, convertFromRosTf)
 {
-  const kindr::RotationQuaternionD referenceQuaternion(0.949, 0.133, 0.169, 0.231);
+  const kindr::RotationQuaternionD referenceQuaternion(0.949, 0.133, 0.169, 0.2305);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
@@ -140,7 +140,7 @@ TEST(RosTfPoseEigen, convertFromRosTf)
 
 TEST(RosTfPoseEigen, convertToRosTf)
 {
-  const kindr::RotationQuaternionD referenceQuaternion(0.113, 0.071, -0.924, 0.358);
+  const kindr::RotationQuaternionD referenceQuaternion(0.113, 0.071, -0.924, 0.3585);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const kindr::Position3D referenceTranslation(-22.4, 0.31, -4.6);
 
@@ -217,7 +217,7 @@ TEST(RosTfPoseEigen, convertToRosTf)
 
 TEST(RosTfPoseEigen, convertTwoWays)
 {
-  const kindr::RotationQuaternionD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
+  const kindr::RotationQuaternionD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(13.3, 2.6, -7.6);

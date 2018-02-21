@@ -42,7 +42,7 @@
 
 TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
 {
-  const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.358);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
   geometry_msgs::Quaternion geometryQuaternionMsg;
   geometryQuaternionMsg.x = referenceQuaternion.x();
@@ -58,7 +58,7 @@ TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
 
 TEST(RosGeometryMsgRotationQuaternionEigen, convertToRosGeometryMsg)
 {
-  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 
   kindr::RotationQuaternionPD rotationQuaternion(referenceQuaternion);
 

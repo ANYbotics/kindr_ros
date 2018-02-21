@@ -42,7 +42,7 @@
 TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
 {
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
-  const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.231);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
   geometry_msgs::Pose geometryPoseMsg;
   geometryPoseMsg.orientation.x = referenceQuaternion.x();
@@ -64,7 +64,7 @@ TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
 TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg)
 {
   const kindr::Position3D referenceTranslation(0.3, -1.1, -0.6);
-  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
   pose.getPosition() = referenceTranslation;
@@ -85,7 +85,7 @@ TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg)
 TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
 {
   const kindr::Position3D referenceTranslation(0.12, 1.5, 0.6);
-  const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.231);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.230541);
 
   geometry_msgs::Transform geometryTransformMsg;
   geometryTransformMsg.rotation.x = referenceQuaternion.x();
@@ -107,7 +107,7 @@ TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
 TEST(RosGeometryMsgTransformationEigen, convertToRosGeometryMsg)
 {
   const kindr::Position3D referenceTranslation(0.3, -1.1345, -0.6);
-  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.186);
+  const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD transformation;
   transformation.getPosition() = referenceTranslation;
