@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>kindr_msgs</name>
-  <version>0.2.2</version>
+  <version>0.2.3</version>
   <description>Kindr common msgs</description>
   <maintainer email="pfankhauser@anybotics.com">Peter Fankhauser</maintainer>
   <author email="pfankhauser@anybotics.com">Peter Fankhauser</author>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>kindr_ros</name>
-  <version>0.2.2</version>
+  <version>0.2.3</version>
   <description>The kindr_ros package</description>
   <maintainer email="peterfa@ethz.ch">Peter Fankhauser</maintainer>
   <license>BSD</license>
