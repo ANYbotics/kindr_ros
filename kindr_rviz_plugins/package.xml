@@ -15,6 +15,7 @@
 
   <depend>rviz</depend>
   <depend>kindr_msgs</depend>
+  <depend>libpthread-stubs0-dev</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>
