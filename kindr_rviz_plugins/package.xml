@@ -15,7 +15,7 @@
 
   <depend>rviz</depend>
   <depend>kindr_msgs</depend>
-  <depend>boost</depend>
+  <depend>qtbase5-dev</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>
