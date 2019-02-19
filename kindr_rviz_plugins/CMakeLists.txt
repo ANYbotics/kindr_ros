@@ -74,6 +74,7 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${QT_LIBRARIES}
   ${catkin_LIBRARIES}
+  pthread
 )
 
 if(rviz_QT_VERSION VERSION_GREATER "5.0.0")
