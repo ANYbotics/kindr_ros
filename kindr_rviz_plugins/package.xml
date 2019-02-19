@@ -15,7 +15,7 @@
 
   <depend>rviz</depend>
   <depend>kindr_msgs</depend>
-  <depend>boost-dev</depend>
+  <depend>boost</depend>
 
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>
