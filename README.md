@@ -14,8 +14,6 @@ This work is conducted as part of [ANYmal Research](https://www.anymal-research.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
-[![Build Status](https://ci.leggedrobotics.com/buildStatus/icon?job=github_ethz-asl/kindr_ros/master)](https://ci.leggedrobotics.com/job/github_ethz-asl/job/kindr_ros/job/master/)
-
 ## Overview
 
 ROS messages and RViz plugins for kindr objects.
