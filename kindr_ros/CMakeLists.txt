@@ -25,15 +25,15 @@ catkin_package(
 )
 
 include_directories(include)
+include_directories(${catkin_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${kindr_INCLUDE_DIRS})
-include_directories(${catkin_INCLUDE_DIRS})
 
 #############
 ## Testing ##
 #############
 
-catkin_add_gtest(${PROJECT_NAME}-test 
+catkin_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/RosGeometryMsgPhysicalQuantitiesTest.cpp
     test/RosGeometryMsgRotationTest.cpp
