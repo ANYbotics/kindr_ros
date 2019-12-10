@@ -3,7 +3,8 @@
   <name>kindr_ros</name>
   <version>0.3.0</version>
   <description>The kindr_ros package</description>
-  <maintainer email="pfankhauser@anybotics.com">Peter Fankhauser</maintainer>
+  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
+  <maintainer email="pleemann@anybotics.com">Philipp Leemann</maintainer>
   <license>BSD</license>
   <author email="cgehring@anybotics.com">Christian Gehring</author>
   <url>https://github.com/anybotics/kindr_ros</url>
