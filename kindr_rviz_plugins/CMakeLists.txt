@@ -98,3 +98,25 @@ install(FILES plugin_description.xml
 install(DIRECTORY icons
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+##########
+## Test ##
+##########
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(test_${PROJECT_NAME}
+    test/EmptyTests.cpp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
+  )
+
+  if(TARGET test_${PROJECT_NAME})
+    target_link_libraries( test_${PROJECT_NAME}
+      ${PROJECT_NAME}
+      ${catkin_LIBRARIES}
+      gtest_main
+    )
+    find_package(cmake_code_coverage QUIET)
+    if(cmake_code_coverage_FOUND)
+      add_gtest_coverage()
+    endif(cmake_code_coverage_FOUND)
+  endif()
+endif()

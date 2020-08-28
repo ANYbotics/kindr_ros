@@ -17,6 +17,9 @@
   <depend>kindr_msgs</depend>
   <depend>qtbase5-dev</depend>
 
+    <test_depend>gtest</test_depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+
   <export>
       <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>

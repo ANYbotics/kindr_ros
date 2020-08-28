@@ -14,4 +14,5 @@
   <depend>tf</depend>
   <build_export_depend>eigen</build_export_depend>
   <test_depend>gtest</test_depend>
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
 </package>
