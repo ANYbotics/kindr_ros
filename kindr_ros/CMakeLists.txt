@@ -33,23 +33,24 @@ include_directories(${kindr_INCLUDE_DIRS})
 ## Testing ##
 #############
 
-catkin_add_gtest(${PROJECT_NAME}-test
-  test/test_main.cpp
-  test/RosGeometryMsgPhysicalQuantitiesTest.cpp
-  test/RosGeometryMsgRotationTest.cpp
-  test/RosGeometryMsgPoseTest.cpp
-  test/RosTfPoseTest.cpp
-  test/TfConventionTest.cpp
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
-  )
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
-  find_package(cmake_code_coverage QUIET)
-  if(cmake_code_coverage_FOUND)
-    add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
-  endif(cmake_code_coverage_FOUND)
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-test
+    test/test_main.cpp
+    test/RosGeometryMsgPhysicalQuantitiesTest.cpp
+    test/RosGeometryMsgRotationTest.cpp
+    test/RosGeometryMsgPoseTest.cpp
+    test/RosTfPoseTest.cpp
+    test/TfConventionTest.cpp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
+    )
+  if(TARGET ${PROJECT_NAME}-test)
+    target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
+    find_package(cmake_code_coverage QUIET)
+    if(cmake_code_coverage_FOUND)
+      add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
+    endif(cmake_code_coverage_FOUND)
+  endif()
 endif()
-
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
