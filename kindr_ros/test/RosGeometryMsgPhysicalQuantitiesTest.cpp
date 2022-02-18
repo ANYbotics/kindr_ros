@@ -26,19 +26,18 @@
  *
 */
 
-#include <iostream>
 
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
-
-#include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
-#include "kindr/phys_quant/PhysicalQuantities.hpp"
-#include "kindr/common/gtest_eigen.hpp"
 
 // ROS
 #include <geometry_msgs/Pose.h>
 
+#include <iostream>
+
+#include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
+#include "kindr/phys_quant/PhysicalQuantities.hpp"
+#include "kindr/common/gtest_eigen.hpp"
 
 
 TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
@@ -53,7 +52,9 @@ TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
   kindr::VectorTypeless3D vector;
   kindr_ros::convertFromRosGeometryMsg(geometryVector3Msg, vector);
 
-  kindr::expectNear(vector.toImplementation(), referenceVector.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    vector.toImplementation(),
+    referenceVector.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg)
@@ -82,7 +83,9 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg)
   kindr::Position3F position;
   kindr_ros::convertFromRosGeometryMsg(geometryPointMsg, position);
 
-  kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    position.toImplementation(),
+    referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg)
@@ -111,7 +114,9 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg)
   kindr::Position3D position;
   kindr_ros::convertFromRosGeometryMsg(geometryPointMsg, position);
 
-  kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    position.toImplementation(),
+    referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPointMsg)

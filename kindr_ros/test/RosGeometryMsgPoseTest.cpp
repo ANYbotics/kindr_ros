@@ -26,18 +26,18 @@
  *
 */
 
-#include <iostream>
-
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
+
+// ROS
+#include <geometry_msgs/Pose.h>
+
+#include <iostream>
 
 #include "kindr_ros/RosGeometryMsgPose.hpp"
 #include "kindr/poses/Pose.hpp"
 #include "kindr/common/gtest_eigen.hpp"
 
-// ROS
-#include <geometry_msgs/Pose.h>
 
 TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
 {
@@ -56,8 +56,9 @@ TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
   kindr_ros::convertFromRosGeometryMsg(geometryPoseMsg, pose);
 
-  kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
-                     KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
+    KINDR_SOURCE_FILE_POS);
   EXPECT_TRUE(pose.getRotation().isNear(referenceQuaternion, 1e-8));
 }
 
@@ -99,8 +100,9 @@ TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
   kindr::HomogeneousTransformationPosition3RotationQuaternionD transformation;
   kindr_ros::convertFromRosGeometryMsg(geometryTransformMsg, transformation);
 
-  kindr::expectNear(transformation.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
-                     KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    transformation.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
+    KINDR_SOURCE_FILE_POS);
   EXPECT_TRUE(transformation.getRotation().isNear(referenceQuaternion, 1e-8));
 }
 

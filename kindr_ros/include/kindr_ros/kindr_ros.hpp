@@ -32,10 +32,13 @@
  *      Author: gech
  */
 
-#pragma once
+#ifndef KINDR_ROS__KINDR_ROS_HPP_
+#define KINDR_ROS__KINDR_ROS_HPP_
 
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
 #include "kindr_ros/RosGeometryMsgPose.hpp"
 #include "kindr_ros/RosGeometryMsgTwist.hpp"
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 #include "kindr_ros/RosTfPose.hpp"
+
+#endif  // KINDR_ROS__KINDR_ROS_HPP_

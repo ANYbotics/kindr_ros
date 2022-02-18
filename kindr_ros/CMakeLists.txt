@@ -4,8 +4,9 @@ project(kindr_ros)
 add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs tf
-  )
+  geometry_msgs
+  tf
+)
 
 # Attempt to find catkinized kindr
 find_package(kindr QUIET)
@@ -42,16 +43,16 @@ if(CATKIN_ENABLE_TESTING)
     test/RosTfPoseTest.cpp
     test/TfConventionTest.cpp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
-    )
+  )
   if(TARGET ${PROJECT_NAME}-test)
     target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
     find_package(cmake_code_coverage QUIET)
     if(cmake_code_coverage_FOUND)
       add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
-    endif(cmake_code_coverage_FOUND)
+    endif()
   endif()
 endif()
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  )
+)

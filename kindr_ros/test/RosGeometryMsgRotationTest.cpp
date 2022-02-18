@@ -26,18 +26,17 @@
  *
 */
 
-#include <iostream>
-
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
+
+// ROS
+#include <geometry_msgs/Quaternion.h>
+
+#include <iostream>
 
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 #include "kindr/poses/Pose.hpp"
 #include "kindr/common/gtest_eigen.hpp"
-
-// ROS
-#include <geometry_msgs/Quaternion.h>
 
 
 TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
