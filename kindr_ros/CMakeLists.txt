@@ -5,7 +5,7 @@ add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
-  tf
+  tf2
 )
 
 # Attempt to find catkinized kindr
@@ -21,7 +21,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
   INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
   #  LIBRARIES kindr_ros
-  CATKIN_DEPENDS geometry_msgs tf
+  CATKIN_DEPENDS geometry_msgs tf2
   DEPENDS kindr
 )
 

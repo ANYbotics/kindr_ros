@@ -34,7 +34,10 @@
 #include <kindr/Core>
 
 // ros
-#include <tf/LinearMath/Transform.h>
+#include <tf2/LinearMath/Transform.h>
+#include <tf2/LinearMath/Vector3.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
 
 
 namespace kindr_ros
@@ -43,7 +46,7 @@ namespace kindr_ros
 
 template<typename PrimType_, typename Position_, typename Rotation_>
 inline static void convertFromRosTf(
-  const tf::Transform & tfTransform,
+  const tf2::Transform & tfTransform,
   kindr::HomogeneousTransformation<PrimType_, Position_,
   Rotation_> & pose)
 {
@@ -53,9 +56,9 @@ inline static void convertFromRosTf(
   // This is the definition of TF.
   typedef kindr::RotationMatrix<PrimType_> RotationMatrixTfLike;
 
-  const tf::Vector3 & rowX = tfTransform.getBasis().getRow(0);
-  const tf::Vector3 & rowY = tfTransform.getBasis().getRow(1);
-  const tf::Vector3 & rowZ = tfTransform.getBasis().getRow(2);
+  const tf2::Vector3 & rowX = tfTransform.getBasis().getRow(0);
+  const tf2::Vector3 & rowY = tfTransform.getBasis().getRow(1);
+  const tf2::Vector3 & rowZ = tfTransform.getBasis().getRow(2);
 
   RotationMatrixTfLike rotation;
   rotation.setMatrix(
@@ -72,32 +75,32 @@ inline static void convertFromRosTf(
 }
 
 template<typename Rotation_>
-inline static void convertToRosTfQuaternion(tf::Quaternion & tfQuat, const Rotation_ & rotation)
+inline static void convertToRosTfQuaternion(tf2::Quaternion & tfQuat, const Rotation_ & rotation)
 {
   const auto quat = kindr::RotationQuaternion<typename Rotation_::Scalar>(rotation);
-  tfQuat = tf::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
+  tfQuat = tf2::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
 }
 
 template<typename PrimType_, typename Position_, typename Rotation_>
 inline static void convertToRosTf(
   const kindr::HomogeneousTransformation<PrimType_, Position_,
-  Rotation_> & pose, tf::Transform & tfTransform)
+  Rotation_> & pose, tf2::Transform & tfTransform)
 {
   // This is the definition of TF.
   typedef kindr::RotationMatrix<PrimType_> RotationMatrixTfLike;
   Eigen::Matrix3d rotationMatrix(RotationMatrixTfLike(pose.getRotation()).matrix());
-  tf::Matrix3x3 tfRotationMatrix(rotationMatrix(0, 0), rotationMatrix(0, 1), rotationMatrix(0, 2),
+  tf2::Matrix3x3 tfRotationMatrix(rotationMatrix(0, 0), rotationMatrix(0, 1), rotationMatrix(0, 2),
     rotationMatrix(1, 0), rotationMatrix(1, 1), rotationMatrix(1, 2),
     rotationMatrix(2, 0), rotationMatrix(2, 1), rotationMatrix(2, 2));
   tfTransform.setBasis(tfRotationMatrix);
 
   // less accurate by quaternion:
-//  tf::Quaternion tfQuat;
+//  tf2::Quaternion tfQuat;
 //  convertToRosTfQuaternion(tfQuat, pose.getRotation());
 //  tfTransform.setRotation(tfQuat);
 
   tfTransform.setOrigin(
-    tf::Vector3(
+    tf2::Vector3(
       pose.getPosition().x(),
       pose.getPosition().y(),
       pose.getPosition().z()));
