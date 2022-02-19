@@ -287,32 +287,33 @@ TEST(RosTfPoseEigen, convertTwoWays)
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr_ros::convertToRosTf(pose, tfTransformConverted);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(0).x(), tfTransform.getBasis().getRow(
-      0).x(), 1e-8);
+    tfTransformConverted.getBasis().getRow(0).x(),
+    tfTransform.getBasis().getRow(0).x(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(0).y(), tfTransform.getBasis().getRow(
-      0).y(), 1e-8);
+    tfTransformConverted.getBasis().getRow(0).y(),
+    tfTransform.getBasis().getRow(0).y(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(0).z(), tfTransform.getBasis().getRow(
-      0).z(), 1e-8);
+    tfTransformConverted.getBasis().getRow(0).z(),
+    tfTransform.getBasis().getRow(0).z(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(1).x(), tfTransform.getBasis().getRow(
-      1).x(), 1e-8);
+    tfTransformConverted.getBasis().getRow(1).x(),
+    tfTransform.getBasis().getRow(1).x(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(1).y(), tfTransform.getBasis().getRow(
-      1).y(), 1e-8);
+    tfTransformConverted.getBasis().getRow(1).y(),
+    tfTransform.getBasis().getRow(1).y(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(1).z(), tfTransform.getBasis().getRow(
-      1).z(), 1e-8);
+    tfTransformConverted.getBasis().getRow(1).z(),
+    tfTransform.getBasis().getRow(1).z(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(2).x(), tfTransform.getBasis().getRow(
-      2).x(), 1e-8);
+    tfTransformConverted.getBasis().getRow(2).x(),
+    tfTransform.getBasis().getRow(2).x(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(2).y(), tfTransform.getBasis().getRow(
-      2).y(), 1e-8);
+    tfTransformConverted.getBasis().getRow(2).y(),
+    tfTransform.getBasis().getRow(2).y(), 1e-8);
   EXPECT_NEAR(
-    tfTransformConverted.getBasis().getRow(2).z(), tfTransform.getBasis().getRow(
-      2).z(), 1e-8);
+    tfTransformConverted.getBasis().getRow(2).z(),
+    tfTransform.getBasis().getRow(2).z(), 1e-8);
+
   EXPECT_NEAR(tfTransformConverted.getOrigin().x(), tfTransform.getOrigin().x(), 1e-8);
   EXPECT_NEAR(tfTransformConverted.getOrigin().y(), tfTransform.getOrigin().y(), 1e-8);
   EXPECT_NEAR(tfTransformConverted.getOrigin().z(), tfTransform.getOrigin().z(), 1e-8);
