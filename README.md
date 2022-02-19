@@ -20,24 +20,29 @@ ROS messages and RViz plugins for kindr objects.
 
 ## Packages
 
-### kindr_msgs
+### kindr_msgs (supports ROS2)
 
 ROS messages for kindr objects.
 
-### kindr_ros
+### kindr_ros (supports ROS2)
 
 Conversion between official ROS messages and kindr objects.
 
-### kindr_rviz_plugins
+### kindr_rviz_plugins (Not yet ported)
 
 RViz plugins to visualize kindr ROS messages.
 
-### multi_dof_joint_trajectory_rviz_plugins
+### multi_dof_joint_trajectory_rviz_plugins (Not yet ported)
 
 RViz plugins to visualize trajectory ROS messages.
 
 ## Usage
 
-To build, clone this repository into your catkin workspace and type
+To build, clone this repository into your colcon workspace and type
 
-    catkin build <package_name>
+    colcon build --packages-up-to <package_name>
+
+To run tests type:
+
+    colcon test --packages-select <package_name>
+    colcon test-result --all --verbose

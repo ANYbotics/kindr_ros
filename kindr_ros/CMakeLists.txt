@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.5)
 project(kindr_ros)
 
 # Use C++14 standard
@@ -13,30 +13,19 @@ find_package(ament_cmake REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(kindr REQUIRED)
+
+find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 
-include_directories(include)
-include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${kindr_INCLUDE_DIRS})
-
-add_library(${PROJECT_NAME} INTERFACE)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-  PUBLIC_HEADER
-  kindr_ros/kindr_ros.hpp
-  kindr_ros/RosGeometryMsgPhysicalQuantities.hpp
-  kindr_ros/RosGeometryMsgPose.hpp
-  kindr_ros/RosGeometryMsgRotation.hpp
-  kindr_ros/RosGeometryMsgTwist.hpp
-  kindr_ros/RosTfPose.hpp
+set(dependencies
+  eigen3_cmake_module
+  Eigen3
+  tf2
+  geometry_msgs
 )
 
-install(
-  TARGETS
-    ${PROJECT_NAME}
-  PUBLIC_HEADER
-    DESTINATION include
-)
+install(DIRECTORY include/${PROJECT_NAME}/
+        DESTINATION include/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -55,20 +44,25 @@ if(BUILD_TESTING)
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
   )
 
-  # TODO(SivertHavso): add back code coverage:
-  # if(TARGET ${PROJECT_NAME}-test)
-  #   target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
-  #   find_package(cmake_code_coverage QUIET)
-  #   if(cmake_code_coverage_FOUND)
-  #     add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
-  #   endif()
-  # endif()
+  if(TARGET ${PROJECT_NAME}-test)
+    target_include_directories(${PROJECT_NAME}-test PUBLIC
+      include
+      ${EIGEN3_INCLUDE_DIRS})
+    ament_target_dependencies(${PROJECT_NAME}-test
+      ${dependencies}
+    )
+    # TODO(SivertHavso): add back code coverage:
+    #   find_package(cmake_code_coverage QUIET)
+    #   if(cmake_code_coverage_FOUND)
+    #     add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
+    #   endif()
+  endif()
 endif()
 
-ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
+ament_export_include_directories(include)
 
-ament_export_libraries(
-  ${PROJECT_NAME}
+ament_export_dependencies(
+  ${dependencies}
 )
 
 ament_package()

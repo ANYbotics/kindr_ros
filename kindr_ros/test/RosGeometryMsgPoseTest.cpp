@@ -30,7 +30,7 @@
 #include <gtest/gtest.h>
 
 // ROS
-#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/msg/pose.hpp>
 
 #include <iostream>
 
@@ -44,7 +44,7 @@ TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
-  geometry_msgs::Pose geometryPoseMsg;
+  geometry_msgs::msg::Pose geometryPoseMsg;
   geometryPoseMsg.orientation.x = referenceQuaternion.x();
   geometryPoseMsg.orientation.y = referenceQuaternion.y();
   geometryPoseMsg.orientation.z = referenceQuaternion.z();
@@ -71,7 +71,7 @@ TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg)
   pose.getPosition() = referenceTranslation;
   pose.getRotation() = referenceQuaternion;
 
-  geometry_msgs::Pose geometryPoseMsg;
+  geometry_msgs::msg::Pose geometryPoseMsg;
   kindr_ros::convertToRosGeometryMsg(pose, geometryPoseMsg);
 
   EXPECT_NEAR(geometryPoseMsg.orientation.x, referenceQuaternion.x(), 1e-8);
@@ -88,7 +88,7 @@ TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
   const kindr::Position3D referenceTranslation(0.12, 1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.230541);
 
-  geometry_msgs::Transform geometryTransformMsg;
+  geometry_msgs::msg::Transform geometryTransformMsg;
   geometryTransformMsg.rotation.x = referenceQuaternion.x();
   geometryTransformMsg.rotation.y = referenceQuaternion.y();
   geometryTransformMsg.rotation.z = referenceQuaternion.z();
@@ -115,7 +115,7 @@ TEST(RosGeometryMsgTransformationEigen, convertToRosGeometryMsg)
   transformation.getPosition() = referenceTranslation;
   transformation.getRotation() = referenceQuaternion;
 
-  geometry_msgs::Transform geometryTransformMsg;
+  geometry_msgs::msg::Transform geometryTransformMsg;
   kindr_ros::convertToRosGeometryMsg(transformation, geometryTransformMsg);
 
   EXPECT_NEAR(geometryTransformMsg.rotation.x, referenceQuaternion.x(), 1e-8);
