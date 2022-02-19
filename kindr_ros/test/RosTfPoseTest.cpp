@@ -26,19 +26,20 @@
  *
 */
 
-#include <iostream>
-
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
+
+// ROS
+#include <tf2/LinearMath/Transform.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2/LinearMath/Vector3.h>
+
+#include <iostream>
 
 #include "kindr_ros/RosTfPose.hpp"
 #include "kindr/poses/Pose.hpp"
 #include "kindr/rotations/Rotation.hpp"
 #include "kindr/common/gtest_eigen.hpp"
-
-// ROS
-#include <tf/LinearMath/Transform.h>
 
 
 TEST(RosTfPoseEigen, convertFromRosTf)
@@ -47,34 +48,53 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
-  const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
-  const tf::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(0,0), referenceRotationMatrixEigen(0,1), referenceRotationMatrixEigen(0,2),
-                                       referenceRotationMatrixEigen(1,0), referenceRotationMatrixEigen(1,1), referenceRotationMatrixEigen(1,2),
-                                       referenceRotationMatrixEigen(2,0), referenceRotationMatrixEigen(2,1), referenceRotationMatrixEigen(2,2));
-  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
+  const tf2::Vector3 referenceOriginTf(referenceTranslation.x(),
+    referenceTranslation.y(), referenceTranslation.z());
+  const tf2::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(
+      0,
+      0), referenceRotationMatrixEigen(
+      0, 1), referenceRotationMatrixEigen(0, 2),
+    referenceRotationMatrixEigen(1, 0), referenceRotationMatrixEigen(
+      1,
+      1), referenceRotationMatrixEigen(
+      1, 2),
+    referenceRotationMatrixEigen(2, 0), referenceRotationMatrixEigen(
+      2,
+      1), referenceRotationMatrixEigen(
+      2, 2));
+  const tf2::Quaternion referenceQuaternionTf(referenceQuaternion.x(),
+    referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
-  tf::Transform tfTransform;
-  tf::Transform tfTransformInverse;
+  tf2::Transform tfTransform;
+  tf2::Transform tfTransformInverse;
 
   // Setting & getting identity
   tfTransform.setIdentity();
   kindr_ros::convertFromRosTf(tfTransform, pose);
-  kindr::expectNear(pose.getTransformationMatrix(), Eigen::Matrix4d::Identity(), 1e-4, KINDR_SOURCE_FILE_POS);
-  kindr::expectNear(pose.getPosition().toImplementation(), kindr::Position3D::Zero().toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    pose.getTransformationMatrix(),
+    Eigen::Matrix4d::Identity(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    pose.getPosition().toImplementation(),
+    kindr::Position3D::Zero().toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // Setting & getting with rotation matrix
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
   kindr_ros::convertFromRosTf(tfTransform, pose);
-  kindr::expectNear(kindr::RotationMatrixD(pose.getRotation()).matrix(),
-                     referenceRotationMatrix.matrix(), 1e-4, KINDR_SOURCE_FILE_POS);
-  kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    kindr::RotationMatrixD(pose.getRotation()).matrix(),
+    referenceRotationMatrix.matrix(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    pose.getPosition().toImplementation(),
+    referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // Identity transformation
   const kindr::Position3D testVector1(6.6, 0.0, -3.2);
   tfTransform.setIdentity();
-  tf::Vector3 tfTestVectorTransformed1 = tfTransform(tf::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
+  // tf2::Vector3 tfTestVectorTransformed1 =
+  //   tfTransform(tf2::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed1 = pose.transform(testVector1);
   EXPECT_NEAR(testVectorTransformed1.x(), testVector1.x(), 1e-8);
@@ -85,7 +105,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   const kindr::Position3D testVector2(-18.4, 41.4, -0.2);
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
-  tf::Vector3 tfTestVectorTransformed2 = tfTransform(tf::Vector3(testVector2.x(), testVector2.y(), testVector2.z()));
+  tf2::Vector3 tfTestVectorTransformed2 =
+    tfTransform(tf2::Vector3(testVector2.x(), testVector2.y(), testVector2.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed2 = pose.transform(testVector2);
   EXPECT_NEAR(testVectorTransformed2.x(), tfTestVectorTransformed2.x(), 1e-2);
@@ -97,7 +118,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
   tfTransformInverse = tfTransform.inverse();
-  tf::Vector3 tfTestVectorTransformed3 = tfTransformInverse(tf::Vector3(testVector3.x(), testVector3.y(), testVector3.z()));
+  tf2::Vector3 tfTestVectorTransformed3 =
+    tfTransformInverse(tf2::Vector3(testVector3.x(), testVector3.y(), testVector3.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed3 = pose.inverseTransform(testVector3);
   EXPECT_NEAR(testVectorTransformed3.x(), tfTestVectorTransformed3.x(), 1e-2);
@@ -108,7 +130,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   const kindr::Position3D testVector4(0.0, 0.0, 0.0);
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
-  tf::Vector3 tfTestVectorTransformed4 = tfTransform(tf::Vector3(testVector4.x(), testVector4.y(), testVector4.z()));
+  tf2::Vector3 tfTestVectorTransformed4 =
+    tfTransform(tf2::Vector3(testVector4.x(), testVector4.y(), testVector4.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed4 = pose.transform(testVector4);
   EXPECT_NEAR(testVectorTransformed4.x(), tfTestVectorTransformed4.x(), 1e-4);
@@ -119,7 +142,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   const kindr::Position3D testVector5(1.0, 3.0, -4.0);
   tfTransform.setIdentity();
   tfTransform.setBasis(referenceBasisTf);
-  tf::Vector3 tfTestVectorTransformed5 = tfTransform(tf::Vector3(testVector5.x(), testVector5.y(), testVector5.z()));
+  tf2::Vector3 tfTestVectorTransformed5 =
+    tfTransform(tf2::Vector3(testVector5.x(), testVector5.y(), testVector5.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed5 = pose.transform(testVector5);
   EXPECT_NEAR(testVectorTransformed5.x(), tfTestVectorTransformed5.x(), 1e-2);
@@ -130,7 +154,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   const kindr::Position3D testVector6(0.0, 1.0, -44.0);
   tfTransform.setIdentity();
   tfTransform.setOrigin(referenceOriginTf);
-  tf::Vector3 tfTestVectorTransformed6 = tfTransform(tf::Vector3(testVector6.x(), testVector6.y(), testVector6.z()));
+  tf2::Vector3 tfTestVectorTransformed6 =
+    tfTransform(tf2::Vector3(testVector6.x(), testVector6.y(), testVector6.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed6 = pose.transform(testVector6);
   EXPECT_NEAR(testVectorTransformed6.x(), tfTestVectorTransformed6.x(), 1e-8);
@@ -145,15 +170,16 @@ TEST(RosTfPoseEigen, convertToRosTf)
   const kindr::Position3D referenceTranslation(-22.4, 0.31, -4.6);
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
-  tf::Transform tfTransform;
-  tf::Transform tfTransformInverse;
+  tf2::Transform tfTransform;
+  tf2::Transform tfTransformInverse;
 
   // Identity transformation
   const kindr::Position3D testVector1(0.6, -0.4, -3.2);
   pose.setIdentity();
-  kindr::Position3D testVector1Transformed = pose.transform(testVector1);
+  // kindr::Position3D testVector1Transformed = pose.transform(testVector1);
   kindr_ros::convertToRosTf(pose, tfTransform);
-  tf::Vector3 tfTestVector1Transformed = tfTransform(tf::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
+  tf2::Vector3 tfTestVector1Transformed =
+    tfTransform(tf2::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
   EXPECT_NEAR(tfTestVector1Transformed.x(), testVector1.x(), 1e-8);
   EXPECT_NEAR(tfTestVector1Transformed.y(), testVector1.y(), 1e-8);
   EXPECT_NEAR(tfTestVector1Transformed.z(), testVector1.z(), 1e-8);
@@ -164,7 +190,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
   pose.getRotation() = referenceQuaternion;
   kindr::Position3D testVector2Transformed = pose.transform(testVector2);
   kindr_ros::convertToRosTf(pose, tfTransform);
-  tf::Vector3 tfTestVector2Transformed = tfTransform(tf::Vector3(testVector2.x(), testVector2.y(), testVector2.z()));
+  tf2::Vector3 tfTestVector2Transformed =
+    tfTransform(tf2::Vector3(testVector2.x(), testVector2.y(), testVector2.z()));
   EXPECT_NEAR(tfTestVector2Transformed.x(), testVector2Transformed.x(), 1e-8);
   EXPECT_NEAR(tfTestVector2Transformed.y(), testVector2Transformed.y(), 1e-8);
   EXPECT_NEAR(tfTestVector2Transformed.z(), testVector2Transformed.z(), 1e-8);
@@ -176,7 +203,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
   kindr::Position3D testVector3Transformed = pose.inverseTransform(testVector3);
   kindr_ros::convertToRosTf(pose, tfTransform);
   tfTransformInverse = tfTransform.inverse();
-  tf::Vector3 tfTestVector3Transformed = tfTransformInverse(tf::Vector3(testVector3.x(), testVector3.y(), testVector3.z()));
+  tf2::Vector3 tfTestVector3Transformed =
+    tfTransformInverse(tf2::Vector3(testVector3.x(), testVector3.y(), testVector3.z()));
   EXPECT_NEAR(tfTestVector3Transformed.x(), testVector3Transformed.x(), 1e-8);
   EXPECT_NEAR(tfTestVector3Transformed.y(), testVector3Transformed.y(), 1e-8);
   EXPECT_NEAR(tfTestVector3Transformed.z(), testVector3Transformed.z(), 1e-8);
@@ -187,7 +215,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
   pose.getRotation() = referenceQuaternion;
   kindr::Position3D testVector4Transformed = pose.transform(testVector4);
   kindr_ros::convertToRosTf(pose, tfTransform);
-  tf::Vector3 tfTestVector4Transformed = tfTransform(tf::Vector3(testVector4.x(), testVector4.y(), testVector4.z()));
+  tf2::Vector3 tfTestVector4Transformed =
+    tfTransform(tf2::Vector3(testVector4.x(), testVector4.y(), testVector4.z()));
   EXPECT_NEAR(tfTestVector4Transformed.x(), testVector4Transformed.x(), 1e-8);
   EXPECT_NEAR(tfTestVector4Transformed.y(), testVector4Transformed.y(), 1e-8);
   EXPECT_NEAR(tfTestVector4Transformed.z(), testVector4Transformed.z(), 1e-8);
@@ -198,7 +227,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
   pose.getRotation() = referenceQuaternion;
   kindr::Position3D testVector5Transformed = pose.transform(testVector5);
   kindr_ros::convertToRosTf(pose, tfTransform);
-  tf::Vector3 tfTestVector5Transformed = tfTransform(tf::Vector3(testVector5.x(), testVector5.y(), testVector5.z()));
+  tf2::Vector3 tfTestVector5Transformed =
+    tfTransform(tf2::Vector3(testVector5.x(), testVector5.y(), testVector5.z()));
   EXPECT_NEAR(tfTestVector5Transformed.x(), testVector5Transformed.x(), 1e-8);
   EXPECT_NEAR(tfTestVector5Transformed.y(), testVector5Transformed.y(), 1e-8);
   EXPECT_NEAR(tfTestVector5Transformed.z(), testVector5Transformed.z(), 1e-8);
@@ -209,7 +239,8 @@ TEST(RosTfPoseEigen, convertToRosTf)
   pose.getPosition() = referenceTranslation;
   kindr::Position3D testVector6Transformed = pose.transform(testVector6);
   kindr_ros::convertToRosTf(pose, tfTransform);
-  tf::Vector3 tfTestVector6Transformed = tfTransform(tf::Vector3(testVector6.x(), testVector6.y(), testVector6.z()));
+  tf2::Vector3 tfTestVector6Transformed =
+    tfTransform(tf2::Vector3(testVector6.x(), testVector6.y(), testVector6.z()));
   EXPECT_NEAR(tfTestVector6Transformed.x(), testVector6Transformed.x(), 1e-8);
   EXPECT_NEAR(tfTestVector6Transformed.y(), testVector6Transformed.y(), 1e-8);
   EXPECT_NEAR(tfTestVector6Transformed.z(), testVector6Transformed.z(), 1e-8);
@@ -221,37 +252,68 @@ TEST(RosTfPoseEigen, convertTwoWays)
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(13.3, 2.6, -7.6);
-  const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
-  const tf::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(0,0), referenceRotationMatrixEigen(0,1), referenceRotationMatrixEigen(0,2),
-                                       referenceRotationMatrixEigen(1,0), referenceRotationMatrixEigen(1,1), referenceRotationMatrixEigen(1,2),
-                                       referenceRotationMatrixEigen(2,0), referenceRotationMatrixEigen(2,1), referenceRotationMatrixEigen(2,2));
-  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
+  const tf2::Vector3 referenceOriginTf(referenceTranslation.x(),
+    referenceTranslation.y(), referenceTranslation.z());
+  const tf2::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(
+      0,
+      0), referenceRotationMatrixEigen(
+      0, 1), referenceRotationMatrixEigen(0, 2),
+    referenceRotationMatrixEigen(1, 0), referenceRotationMatrixEigen(
+      1,
+      1), referenceRotationMatrixEigen(
+      1, 2),
+    referenceRotationMatrixEigen(2, 0), referenceRotationMatrixEigen(
+      2,
+      1), referenceRotationMatrixEigen(
+      2, 2));
+  const tf2::Quaternion referenceQuaternionTf(referenceQuaternion.x(),
+    referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose, poseConverted;
-  tf::Transform tfTransform, tfTransformConverted;
+  tf2::Transform tfTransform, tfTransformConverted;
 
   // Kindr -> TF -> Kindr
   pose.getPosition() = referenceTranslation;
   pose.getRotation() = referenceQuaternion;
   kindr_ros::convertToRosTf(pose, tfTransform);
   kindr_ros::convertFromRosTf(tfTransform, poseConverted);
-  kindr::expectNear(poseConverted.getTransformationMatrix(),
-                     pose.getTransformationMatrix(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    poseConverted.getTransformationMatrix(),
+    pose.getTransformationMatrix(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // TF -> Kindr -> TF
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr_ros::convertToRosTf(pose, tfTransformConverted);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(0).x(), tfTransform.getBasis().getRow(0).x(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(0).y(), tfTransform.getBasis().getRow(0).y(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(0).z(), tfTransform.getBasis().getRow(0).z(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(1).x(), tfTransform.getBasis().getRow(1).x(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(1).y(), tfTransform.getBasis().getRow(1).y(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(1).z(), tfTransform.getBasis().getRow(1).z(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(2).x(), tfTransform.getBasis().getRow(2).x(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(2).y(), tfTransform.getBasis().getRow(2).y(), 1e-8);
-  EXPECT_NEAR(tfTransformConverted.getBasis().getRow(2).z(), tfTransform.getBasis().getRow(2).z(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(0).x(),
+    tfTransform.getBasis().getRow(0).x(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(0).y(),
+    tfTransform.getBasis().getRow(0).y(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(0).z(),
+    tfTransform.getBasis().getRow(0).z(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(1).x(),
+    tfTransform.getBasis().getRow(1).x(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(1).y(),
+    tfTransform.getBasis().getRow(1).y(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(1).z(),
+    tfTransform.getBasis().getRow(1).z(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(2).x(),
+    tfTransform.getBasis().getRow(2).x(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(2).y(),
+    tfTransform.getBasis().getRow(2).y(), 1e-8);
+  EXPECT_NEAR(
+    tfTransformConverted.getBasis().getRow(2).z(),
+    tfTransform.getBasis().getRow(2).z(), 1e-8);
+
   EXPECT_NEAR(tfTransformConverted.getOrigin().x(), tfTransform.getOrigin().x(), 1e-8);
   EXPECT_NEAR(tfTransformConverted.getOrigin().y(), tfTransform.getOrigin().y(), 1e-8);
   EXPECT_NEAR(tfTransformConverted.getOrigin().z(), tfTransform.getOrigin().z(), 1e-8);

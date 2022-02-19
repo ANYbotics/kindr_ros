@@ -26,26 +26,22 @@
  *
 */
 
-#include <iostream>
 
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
+
+#include <iostream>
 
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
 #include "kindr/phys_quant/PhysicalQuantities.hpp"
 #include "kindr/common/gtest_eigen.hpp"
-
-// ROS
-#include <geometry_msgs/Pose.h>
-
 
 
 TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
 {
   const kindr::VectorTypeless3D referenceVector(-9.12, -25.5, 0.6);
 
-  geometry_msgs::Vector3 geometryVector3Msg;
+  geometry_msgs::msg::Vector3 geometryVector3Msg;
   geometryVector3Msg.x = referenceVector.x();
   geometryVector3Msg.y = referenceVector.y();
   geometryVector3Msg.z = referenceVector.z();
@@ -53,7 +49,9 @@ TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
   kindr::VectorTypeless3D vector;
   kindr_ros::convertFromRosGeometryMsg(geometryVector3Msg, vector);
 
-  kindr::expectNear(vector.toImplementation(), referenceVector.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    vector.toImplementation(),
+    referenceVector.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg)
@@ -62,7 +60,7 @@ TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg)
 
   kindr::VectorTypeless3D vector(referenceVector);
 
-  geometry_msgs::Vector3 geometryVectorMsg;
+  geometry_msgs::msg::Vector3 geometryVectorMsg;
   kindr_ros::convertToRosGeometryMsg(vector, geometryVectorMsg);
 
   EXPECT_NEAR(geometryVectorMsg.x, referenceVector.x(), 1e-8);
@@ -74,7 +72,7 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg)
 {
   const kindr::Position3F referenceTranslation(-9.3, 2.5, 5.6);
 
-  geometry_msgs::Point32 geometryPointMsg;
+  geometry_msgs::msg::Point32 geometryPointMsg;
   geometryPointMsg.x = referenceTranslation.x();
   geometryPointMsg.y = referenceTranslation.y();
   geometryPointMsg.z = referenceTranslation.z();
@@ -82,7 +80,9 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg)
   kindr::Position3F position;
   kindr_ros::convertFromRosGeometryMsg(geometryPointMsg, position);
 
-  kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    position.toImplementation(),
+    referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg)
@@ -91,7 +91,7 @@ TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg)
 
   kindr::Position3F position(referenceTranslation);
 
-  geometry_msgs::Point32 geometryPointMsg;
+  geometry_msgs::msg::Point32 geometryPointMsg;
   kindr_ros::convertToRosGeometryMsg(position, geometryPointMsg);
 
   EXPECT_NEAR(geometryPointMsg.x, referenceTranslation.x(), 1e-8);
@@ -103,7 +103,7 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg)
 {
   const kindr::Position3D referenceTranslation(19.3, -2.5, 5.6);
 
-  geometry_msgs::Point geometryPointMsg;
+  geometry_msgs::msg::Point geometryPointMsg;
   geometryPointMsg.x = referenceTranslation.x();
   geometryPointMsg.y = referenceTranslation.y();
   geometryPointMsg.z = referenceTranslation.z();
@@ -111,7 +111,9 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg)
   kindr::Position3D position;
   kindr_ros::convertFromRosGeometryMsg(geometryPointMsg, position);
 
-  kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(
+    position.toImplementation(),
+    referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
 TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPointMsg)
@@ -120,7 +122,7 @@ TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPointMsg)
 
   kindr::Position3D position(referenceTranslation);
 
-  geometry_msgs::Point geometryPointMsg;
+  geometry_msgs::msg::Point geometryPointMsg;
   kindr_ros::convertToRosGeometryMsg(position, geometryPointMsg);
 
   EXPECT_NEAR(geometryPointMsg.x, referenceTranslation.x(), 1e-8);

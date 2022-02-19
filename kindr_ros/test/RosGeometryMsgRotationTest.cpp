@@ -26,25 +26,24 @@
  *
 */
 
-#include <iostream>
-
 #include <Eigen/Core>
-
 #include <gtest/gtest.h>
+
+// ROS
+#include <geometry_msgs/msg/quaternion.hpp>
+
+#include <iostream>
 
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 #include "kindr/poses/Pose.hpp"
 #include "kindr/common/gtest_eigen.hpp"
-
-// ROS
-#include <geometry_msgs/Quaternion.h>
 
 
 TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
 {
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
-  geometry_msgs::Quaternion geometryQuaternionMsg;
+  geometry_msgs::msg::Quaternion geometryQuaternionMsg;
   geometryQuaternionMsg.x = referenceQuaternion.x();
   geometryQuaternionMsg.y = referenceQuaternion.y();
   geometryQuaternionMsg.z = referenceQuaternion.z();
@@ -62,7 +61,7 @@ TEST(RosGeometryMsgRotationQuaternionEigen, convertToRosGeometryMsg)
 
   kindr::RotationQuaternionPD rotationQuaternion(referenceQuaternion);
 
-  geometry_msgs::Quaternion geometryQuaternionMsg;
+  geometry_msgs::msg::Quaternion geometryQuaternionMsg;
   kindr_ros::convertToRosGeometryMsg(rotationQuaternion, geometryQuaternionMsg);
 
   EXPECT_NEAR(geometryQuaternionMsg.x, referenceQuaternion.x(), 1e-8);
