@@ -12,7 +12,7 @@
 
   <author email="cgehring@anybotics.com">Christian Gehring</author>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>kindr</depend>
   <depend>geometry_msgs</depend>
@@ -20,5 +20,10 @@
 
   <build_export_depend>eigen</build_export_depend>
 
-  <test_depend>gtest</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_lint_auto</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

@@ -1,41 +1,51 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.15)
 project(kindr_ros)
 
-add_definitions(-std=c++11)
-
-find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  tf2
-)
-
-# Attempt to find catkinized kindr
-find_package(kindr QUIET)
-if(NOT kindr_FOUND)
-  # Attempt to find package-based kindr
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(kindr kindr REQUIRED)
+# Use C++14 standard
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+find_package(ament_cmake REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(kindr REQUIRED)
 find_package(Eigen3 REQUIRED)
 
-catkin_package(
-  INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
-  #  LIBRARIES kindr_ros
-  CATKIN_DEPENDS geometry_msgs tf2
-  DEPENDS kindr
-)
-
 include_directories(include)
-include_directories(${catkin_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${kindr_INCLUDE_DIRS})
 
-#############
-## Testing ##
-#############
+add_library(${PROJECT_NAME} INTERFACE)
 
-if(CATKIN_ENABLE_TESTING)
-  catkin_add_gtest(${PROJECT_NAME}-test
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  PUBLIC_HEADER
+  kindr_ros/kindr_ros.hpp
+  kindr_ros/RosGeometryMsgPhysicalQuantities.hpp
+  kindr_ros/RosGeometryMsgPose.hpp
+  kindr_ros/RosGeometryMsgRotation.hpp
+  kindr_ros/RosGeometryMsgTwist.hpp
+  kindr_ros/RosTfPose.hpp
+)
+
+install(
+  TARGETS
+    ${PROJECT_NAME}
+  PUBLIC_HEADER
+    DESTINATION include
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ament_add_gtest(${PROJECT_NAME}-test
     test/test_main.cpp
     test/RosGeometryMsgPhysicalQuantitiesTest.cpp
     test/RosGeometryMsgRotationTest.cpp
@@ -44,15 +54,21 @@ if(CATKIN_ENABLE_TESTING)
     test/TfConventionTest.cpp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
   )
-  if(TARGET ${PROJECT_NAME}-test)
-    target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
-    find_package(cmake_code_coverage QUIET)
-    if(cmake_code_coverage_FOUND)
-      add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
-    endif()
-  endif()
+
+  # TODO(SivertHavso): add back code coverage:
+  # if(TARGET ${PROJECT_NAME}-test)
+  #   target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
+  #   find_package(cmake_code_coverage QUIET)
+  #   if(cmake_code_coverage_FOUND)
+  #     add_gtest_coverage(TEST_BUILD_TARGETS ${PROJECT_NAME}-test)
+  #   endif()
+  # endif()
 endif()
 
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+ament_export_include_directories(include ${EIGEN3_INCLUDE_DIR})
+
+ament_export_libraries(
+  ${PROJECT_NAME}
 )
+
+ament_package()
