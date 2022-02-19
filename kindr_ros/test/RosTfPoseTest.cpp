@@ -93,8 +93,8 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   // Identity transformation
   const kindr::Position3D testVector1(6.6, 0.0, -3.2);
   tfTransform.setIdentity();
-  tf2::Vector3 tfTestVectorTransformed1 =
-    tfTransform(tf2::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
+  // tf2::Vector3 tfTestVectorTransformed1 =
+  //   tfTransform(tf2::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));
   kindr_ros::convertFromRosTf(tfTransform, pose);
   kindr::Position3D testVectorTransformed1 = pose.transform(testVector1);
   EXPECT_NEAR(testVectorTransformed1.x(), testVector1.x(), 1e-8);
@@ -176,7 +176,7 @@ TEST(RosTfPoseEigen, convertToRosTf)
   // Identity transformation
   const kindr::Position3D testVector1(0.6, -0.4, -3.2);
   pose.setIdentity();
-  kindr::Position3D testVector1Transformed = pose.transform(testVector1);
+  // kindr::Position3D testVector1Transformed = pose.transform(testVector1);
   kindr_ros::convertToRosTf(pose, tfTransform);
   tf2::Vector3 tfTestVector1Transformed =
     tfTransform(tf2::Vector3(testVector1.x(), testVector1.y(), testVector1.z()));

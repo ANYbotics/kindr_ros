@@ -64,9 +64,7 @@ public:
     out = kindr::RotationQuaternion<double>(in.w(), in.x(), in.y(), in.z());
   }
 
-  inline static void convertToVelocityVector(
-    Vector & out, Rotation & rot,
-    const Eigen::Matrix<double, 3, 1> & in)
+  inline static void convertToVelocityVector(Vector & out, const Eigen::Matrix<double, 3, 1> & in)
   {
     out = tf2::Vector3(in.x(), in.y(), in.z());
   }
@@ -124,7 +122,7 @@ public:
   }
 
   inline static void convertToOtherVelocityVector(
-    Vector & out, Rotation & rot,
+    Vector & out,
     const Eigen::Matrix<double, 3, 1> & in)
   {
     out = tf2::Vector3(in.x(), in.y(), in.z());
