@@ -1,8 +1,8 @@
 #pragma once
 
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreVector3.h>
 
 #include <rviz/ogre_helpers/line.h>
 #include <rviz/ogre_helpers/movable_text.h>
@@ -11,25 +11,20 @@
 
 #include <trajectory_msgs/MultiDOFJointTrajectoryPoint.h>
 
-
 namespace multi_dof_joint_trajectory_rviz_plugins {
 
-class MultiDOFJointTrajectoryPointConnectionVisual
-{
-public:
-  MultiDOFJointTrajectoryPointConnectionVisual(
-      Ogre::SceneManager* scene_manager,
-      Ogre::SceneNode* parent_node,
-      const trajectory_msgs::MultiDOFJointTrajectoryPoint& from,
-      const trajectory_msgs::MultiDOFJointTrajectoryPoint& to,
-      float show_connection,
-      const Ogre::ColourValue& color);
+class MultiDOFJointTrajectoryPointConnectionVisual {
+ public:
+  MultiDOFJointTrajectoryPointConnectionVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node,
+                                               const trajectory_msgs::MultiDOFJointTrajectoryPoint& from,
+                                               const trajectory_msgs::MultiDOFJointTrajectoryPoint& to, float show_connection,
+                                               const Ogre::ColourValue& color);
   virtual ~MultiDOFJointTrajectoryPointConnectionVisual();
 
   void setShowConnection(bool visible);
   void setColor(const Ogre::ColourValue& color);
 
-private:
+ private:
   void updateShowConnection();
   void updateColor();
 
@@ -43,5 +38,4 @@ private:
   Ogre::ColourValue color_;
 };
 
-} // multi_dof_joint_trajectory_rviz_plugins
-
+}  // namespace multi_dof_joint_trajectory_rviz_plugins

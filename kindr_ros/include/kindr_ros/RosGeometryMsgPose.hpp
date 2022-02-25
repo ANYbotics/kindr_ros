@@ -24,10 +24,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #pragma once
-
 
 // kindr
 #include <kindr/Core>
@@ -40,15 +39,11 @@
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 
-
 namespace kindr_ros {
 
-
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertFromRosGeometryMsg(
-    const geometry_msgs::Pose& geometryPoseMsg,
-    kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertFromRosGeometryMsg(const geometry_msgs::Pose& geometryPoseMsg,
+                                             kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose) {
   convertFromRosGeometryMsg(geometryPoseMsg.position, pose.getPosition());
 
   // This is the definition of ROS Geometry pose.
@@ -59,11 +54,9 @@ inline static void convertFromRosGeometryMsg(
   pose.getRotation() = rotation;
 }
 
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertToRosGeometryMsg(
-    const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose,
-    geometry_msgs::Pose& geometryPoseMsg)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertToRosGeometryMsg(const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose,
+                                           geometry_msgs::Pose& geometryPoseMsg) {
   convertToRosGeometryMsg(pose.getPosition(), geometryPoseMsg.position);
 
   // This is the definition of ROS Geometry pose.
@@ -73,11 +66,9 @@ inline static void convertToRosGeometryMsg(
   convertToRosGeometryMsg(rotation, geometryPoseMsg.orientation);
 }
 
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertFromRosGeometryMsg(
-    const geometry_msgs::Transform& geometryTransformMsg,
-    kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& transformation)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertFromRosGeometryMsg(const geometry_msgs::Transform& geometryTransformMsg,
+                                             kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& transformation) {
   convertFromRosGeometryMsg(geometryTransformMsg.translation, transformation.getPosition());
 
   // This is the definition of ROS Geometry transform.
@@ -88,11 +79,9 @@ inline static void convertFromRosGeometryMsg(
   transformation.getRotation() = rotation;
 }
 
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertToRosGeometryMsg(
-    const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& transformation,
-    geometry_msgs::Transform& geometryTransformMsg)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertToRosGeometryMsg(const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& transformation,
+                                           geometry_msgs::Transform& geometryTransformMsg) {
   convertToRosGeometryMsg(transformation.getPosition(), geometryTransformMsg.translation);
 
   // This is the definition of ROS Geometry transform.
@@ -102,5 +91,4 @@ inline static void convertToRosGeometryMsg(
   convertToRosGeometryMsg(rotation, geometryTransformMsg.rotation);
 }
 
-
-} // namespace kindr_ros
+}  // namespace kindr_ros

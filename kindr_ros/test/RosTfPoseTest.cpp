@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #include <iostream>
 
@@ -32,26 +32,26 @@
 
 #include <gtest/gtest.h>
 
-#include "kindr_ros/RosTfPose.hpp"
+#include "kindr/common/gtest_eigen.hpp"
 #include "kindr/poses/Pose.hpp"
 #include "kindr/rotations/Rotation.hpp"
-#include "kindr/common/gtest_eigen.hpp"
+#include "kindr_ros/RosTfPose.hpp"
 
 // ROS
 #include <tf/LinearMath/Transform.h>
 
-
-TEST(RosTfPoseEigen, convertFromRosTf)
-{
+TEST(RosTfPoseEigen, convertFromRosTf) {
   const kindr::RotationQuaternionD referenceQuaternion(0.949, 0.133, 0.169, 0.2305);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
   const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
-  const tf::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(0,0), referenceRotationMatrixEigen(0,1), referenceRotationMatrixEigen(0,2),
-                                       referenceRotationMatrixEigen(1,0), referenceRotationMatrixEigen(1,1), referenceRotationMatrixEigen(1,2),
-                                       referenceRotationMatrixEigen(2,0), referenceRotationMatrixEigen(2,1), referenceRotationMatrixEigen(2,2));
-  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
+  const tf::Matrix3x3 referenceBasisTf(
+      referenceRotationMatrixEigen(0, 0), referenceRotationMatrixEigen(0, 1), referenceRotationMatrixEigen(0, 2),
+      referenceRotationMatrixEigen(1, 0), referenceRotationMatrixEigen(1, 1), referenceRotationMatrixEigen(1, 2),
+      referenceRotationMatrixEigen(2, 0), referenceRotationMatrixEigen(2, 1), referenceRotationMatrixEigen(2, 2));
+  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(),
+                                             referenceQuaternion.w());
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
   tf::Transform tfTransform;
@@ -67,8 +67,7 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   tfTransform.setOrigin(referenceOriginTf);
   tfTransform.setBasis(referenceBasisTf);
   kindr_ros::convertFromRosTf(tfTransform, pose);
-  kindr::expectNear(kindr::RotationMatrixD(pose.getRotation()).matrix(),
-                     referenceRotationMatrix.matrix(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(kindr::RotationMatrixD(pose.getRotation()).matrix(), referenceRotationMatrix.matrix(), 1e-4, KINDR_SOURCE_FILE_POS);
   kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // Identity transformation
@@ -138,8 +137,7 @@ TEST(RosTfPoseEigen, convertFromRosTf)
   EXPECT_NEAR(testVectorTransformed6.z(), tfTestVectorTransformed6.z(), 1e-8);
 }
 
-TEST(RosTfPoseEigen, convertToRosTf)
-{
+TEST(RosTfPoseEigen, convertToRosTf) {
   const kindr::RotationQuaternionD referenceQuaternion(0.113, 0.071, -0.924, 0.3585);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const kindr::Position3D referenceTranslation(-22.4, 0.31, -4.6);
@@ -215,17 +213,18 @@ TEST(RosTfPoseEigen, convertToRosTf)
   EXPECT_NEAR(tfTestVector6Transformed.z(), testVector6Transformed.z(), 1e-8);
 }
 
-TEST(RosTfPoseEigen, convertTwoWays)
-{
+TEST(RosTfPoseEigen, convertTwoWays) {
   const kindr::RotationQuaternionD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
   const kindr::RotationMatrixD referenceRotationMatrix(referenceQuaternion);
   const Eigen::Matrix3d referenceRotationMatrixEigen(referenceRotationMatrix.matrix());
   const kindr::Position3D referenceTranslation(13.3, 2.6, -7.6);
   const tf::Vector3 referenceOriginTf(referenceTranslation.x(), referenceTranslation.y(), referenceTranslation.z());
-  const tf::Matrix3x3 referenceBasisTf(referenceRotationMatrixEigen(0,0), referenceRotationMatrixEigen(0,1), referenceRotationMatrixEigen(0,2),
-                                       referenceRotationMatrixEigen(1,0), referenceRotationMatrixEigen(1,1), referenceRotationMatrixEigen(1,2),
-                                       referenceRotationMatrixEigen(2,0), referenceRotationMatrixEigen(2,1), referenceRotationMatrixEigen(2,2));
-  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(), referenceQuaternion.w());
+  const tf::Matrix3x3 referenceBasisTf(
+      referenceRotationMatrixEigen(0, 0), referenceRotationMatrixEigen(0, 1), referenceRotationMatrixEigen(0, 2),
+      referenceRotationMatrixEigen(1, 0), referenceRotationMatrixEigen(1, 1), referenceRotationMatrixEigen(1, 2),
+      referenceRotationMatrixEigen(2, 0), referenceRotationMatrixEigen(2, 1), referenceRotationMatrixEigen(2, 2));
+  const tf::Quaternion referenceQuaternionTf(referenceQuaternion.x(), referenceQuaternion.y(), referenceQuaternion.z(),
+                                             referenceQuaternion.w());
 
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose, poseConverted;
   tf::Transform tfTransform, tfTransformConverted;
@@ -235,8 +234,7 @@ TEST(RosTfPoseEigen, convertTwoWays)
   pose.getRotation() = referenceQuaternion;
   kindr_ros::convertToRosTf(pose, tfTransform);
   kindr_ros::convertFromRosTf(tfTransform, poseConverted);
-  kindr::expectNear(poseConverted.getTransformationMatrix(),
-                     pose.getTransformationMatrix(), 1e-4, KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(poseConverted.getTransformationMatrix(), pose.getTransformationMatrix(), 1e-4, KINDR_SOURCE_FILE_POS);
 
   // TF -> Kindr -> TF
   tfTransform.setOrigin(referenceOriginTf);

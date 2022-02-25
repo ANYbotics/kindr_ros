@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 /*
  * kindr_ros.hpp
  *
@@ -36,6 +36,6 @@
 
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
 #include "kindr_ros/RosGeometryMsgPose.hpp"
-#include "kindr_ros/RosGeometryMsgTwist.hpp"
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
+#include "kindr_ros/RosGeometryMsgTwist.hpp"
 #include "kindr_ros/RosTfPose.hpp"

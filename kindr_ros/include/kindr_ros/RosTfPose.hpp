@@ -24,10 +24,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #pragma once
-
 
 // kindr
 #include <kindr/Core>
@@ -35,13 +34,11 @@
 // ros
 #include <tf/LinearMath/Transform.h>
 
-
 namespace kindr_ros {
 
-
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertFromRosTf(const tf::Transform& tfTransform,
+                                    kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose) {
   typedef Position_ Position;
   typedef Rotation_ Rotation;
 
@@ -53,45 +50,37 @@ inline static void convertFromRosTf(const tf::Transform& tfTransform, kindr::Hom
   const tf::Vector3& rowZ = tfTransform.getBasis().getRow(2);
 
   RotationMatrixTfLike rotation;
-  rotation.setMatrix(rowX.x(), rowX.y(), rowX.z(),
-                     rowY.x(), rowY.y(), rowY.z(),
-                     rowZ.x(), rowZ.y(), rowZ.z());
+  rotation.setMatrix(rowX.x(), rowX.y(), rowX.z(), rowY.x(), rowY.y(), rowY.z(), rowZ.x(), rowZ.y(), rowZ.z());
 
-  Position position(tfTransform.getOrigin().getX(),
-                    tfTransform.getOrigin().getY(),
-                    tfTransform.getOrigin().getZ());
+  Position position(tfTransform.getOrigin().getX(), tfTransform.getOrigin().getY(), tfTransform.getOrigin().getZ());
 
   pose.getRotation() = Rotation(rotation);
   pose.getPosition() = position;
 }
 
-template<typename Rotation_>
-inline static void convertToRosTfQuaternion(tf::Quaternion& tfQuat, const Rotation_& rotation)
-{
+template <typename Rotation_>
+inline static void convertToRosTfQuaternion(tf::Quaternion& tfQuat, const Rotation_& rotation) {
   const auto quat = kindr::RotationQuaternion<typename Rotation_::Scalar>(rotation);
   tfQuat = tf::Quaternion(quat.x(), quat.y(), quat.z(), quat.w());
 }
 
-template<typename PrimType_, typename Position_, typename Rotation_>
-inline static void convertToRosTf(const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose, tf::Transform& tfTransform)
-{
+template <typename PrimType_, typename Position_, typename Rotation_>
+inline static void convertToRosTf(const kindr::HomogeneousTransformation<PrimType_, Position_, Rotation_>& pose,
+                                  tf::Transform& tfTransform) {
   // This is the definition of TF.
   typedef kindr::RotationMatrix<PrimType_> RotationMatrixTfLike;
   Eigen::Matrix3d rotationMatrix(RotationMatrixTfLike(pose.getRotation()).matrix());
-  tf::Matrix3x3 tfRotationMatrix(rotationMatrix(0,0), rotationMatrix(0,1), rotationMatrix(0,2),
-                                 rotationMatrix(1,0), rotationMatrix(1,1), rotationMatrix(1,2),
-                                 rotationMatrix(2,0), rotationMatrix(2,1), rotationMatrix(2,2));
+  tf::Matrix3x3 tfRotationMatrix(rotationMatrix(0, 0), rotationMatrix(0, 1), rotationMatrix(0, 2), rotationMatrix(1, 0),
+                                 rotationMatrix(1, 1), rotationMatrix(1, 2), rotationMatrix(2, 0), rotationMatrix(2, 1),
+                                 rotationMatrix(2, 2));
   tfTransform.setBasis(tfRotationMatrix);
 
   // less accurate by quaternion:
-//  tf::Quaternion tfQuat;
-//  convertToRosTfQuaternion(tfQuat, pose.getRotation());
-//  tfTransform.setRotation(tfQuat);
+  //  tf::Quaternion tfQuat;
+  //  convertToRosTfQuaternion(tfQuat, pose.getRotation());
+  //  tfTransform.setRotation(tfQuat);
 
-  tfTransform.setOrigin(tf::Vector3(pose.getPosition().x(),
-                                    pose.getPosition().y(),
-                                    pose.getPosition().z()));
+  tfTransform.setOrigin(tf::Vector3(pose.getPosition().x(), pose.getPosition().y(), pose.getPosition().z()));
 }
 
-
-} // namespace kindr_ros
+}  // namespace kindr_ros

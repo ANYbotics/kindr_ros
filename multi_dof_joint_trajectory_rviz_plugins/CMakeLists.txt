@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(multi_dof_joint_trajectory_rviz_plugins)
 
-# Set compiler flags
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 11)
+add_compile_options(-Wall -Wextra -Wpedantic)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(catkin REQUIRED COMPONENTS
-   rviz
-   trajectory_msgs
+set(CATKIN_PACKAGE_HEADER_DEPENDENCIES
+  rviz
+  trajectory_msgs
+)
+
+find_package(catkin REQUIRED
+  COMPONENTS
+    ${CATKIN_PACKAGE_HEADER_DEPENDENCIES}
 )
 
 catkin_package(
@@ -15,11 +21,8 @@ catkin_package(
   LIBRARIES
     ${PROJECT_NAME}
   CATKIN_DEPENDS
-    rviz
-    trajectory_msgs
+    ${CATKIN_PACKAGE_HEADER_DEPENDENCIES}
 )
-
-link_directories(${catkin_LIBRARY_DIRS})
 
 ## This plugin includes Qt widgets, so we must include Qt like so:
 if(rviz_QT_VERSION VERSION_GREATER "5.0.0")
@@ -59,62 +62,75 @@ else()
   )
 endif()
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
-
 add_library(${PROJECT_NAME}
   ${multi_dof_joint_trajectory_rviz_plugins_SRCS}
   ${multi_dof_joint_trajectory_rviz_plugins_HDRS_QT}
   ${multi_dof_joint_trajectory_rviz_plugins_HDRS}
   ${multi_dof_joint_trajectory_rviz_plugins_MOCS}
 )
-
-target_link_libraries(${PROJECT_NAME}
-  ${QT_LIBRARIES} ${catkin_LIBRARIES}
+add_dependencies(${PROJECT_NAME}
+  ${catkin_EXPORTED_TARGETS}
 )
-
+target_include_directories(${PROJECT_NAME} PRIVATE
+  include
+)
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+)
+target_link_libraries(${PROJECT_NAME}
+  ${QT_LIBRARIES}
+  ${catkin_LIBRARIES}
+)
 if(rviz_QT_VERSION VERSION_GREATER "5.0.0")
   target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 else()
   target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 endif()
 
-## Install rules
-
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS
+    ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-install(FILES plugin_description.xml
+install(FILES
+    plugin_description.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(DIRECTORY
+    icons
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-install(DIRECTORY icons
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-
-##########
-## Test ##
-##########
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(test_${PROJECT_NAME}
     test/EmptyTests.cpp
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
   )
+  add_dependencies(test_${PROJECT_NAME}
+    ${PROJECT_NAME}
+  )
+  target_include_directories(test_${PROJECT_NAME} PRIVATE
+    include
+  )
+  target_include_directories(test_${PROJECT_NAME} SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${kindr_INCLUDE_DIRS}
+  )
+  target_link_libraries(test_${PROJECT_NAME}
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    gtest_main
+  )
 
-  if(TARGET test_${PROJECT_NAME})
-    target_link_libraries( test_${PROJECT_NAME}
-      ${PROJECT_NAME}
-      ${catkin_LIBRARIES}
-      gtest_main
-    )
-    find_package(cmake_code_coverage QUIET)
-    if(cmake_code_coverage_FOUND)
-      add_gtest_coverage()
-    endif(cmake_code_coverage_FOUND)
-  endif()
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_gtest_coverage()
+  endif(cmake_code_coverage_FOUND)
 endif()
+
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling()
+endif(cmake_clang_tools_FOUND)

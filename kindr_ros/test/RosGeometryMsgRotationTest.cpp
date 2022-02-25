@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #include <iostream>
 
@@ -32,16 +32,14 @@
 
 #include <gtest/gtest.h>
 
-#include "kindr_ros/RosGeometryMsgRotation.hpp"
-#include "kindr/poses/Pose.hpp"
 #include "kindr/common/gtest_eigen.hpp"
+#include "kindr/poses/Pose.hpp"
+#include "kindr_ros/RosGeometryMsgRotation.hpp"
 
 // ROS
 #include <geometry_msgs/Quaternion.h>
 
-
-TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
-{
+TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg) {
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
   geometry_msgs::Quaternion geometryQuaternionMsg;
@@ -56,8 +54,7 @@ TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg)
   EXPECT_TRUE(rotationQuaternion.isNear(referenceQuaternion, 1e-8));
 }
 
-TEST(RosGeometryMsgRotationQuaternionEigen, convertToRosGeometryMsg)
-{
+TEST(RosGeometryMsgRotationQuaternionEigen, convertToRosGeometryMsg) {
   const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 
   kindr::RotationQuaternionPD rotationQuaternion(referenceQuaternion);

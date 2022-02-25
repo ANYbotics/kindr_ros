@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #include <iostream>
 
@@ -32,15 +32,14 @@
 
 #include <gtest/gtest.h>
 
-#include "kindr_ros/RosGeometryMsgPose.hpp"
-#include "kindr/poses/Pose.hpp"
 #include "kindr/common/gtest_eigen.hpp"
+#include "kindr/poses/Pose.hpp"
+#include "kindr_ros/RosGeometryMsgPose.hpp"
 
 // ROS
 #include <geometry_msgs/Pose.h>
 
-TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
-{
+TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
@@ -56,13 +55,11 @@ TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg)
   kindr::HomogeneousTransformationPosition3RotationQuaternionD pose;
   kindr_ros::convertFromRosGeometryMsg(geometryPoseMsg, pose);
 
-  kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
-                     KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(pose.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
   EXPECT_TRUE(pose.getRotation().isNear(referenceQuaternion, 1e-8));
 }
 
-TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg)
-{
+TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.3, -1.1, -0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 
@@ -82,8 +79,7 @@ TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg)
   EXPECT_NEAR(geometryPoseMsg.position.z, referenceTranslation.z(), 1e-8);
 }
 
-TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
-{
+TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.12, 1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.230541);
 
@@ -99,13 +95,11 @@ TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg)
   kindr::HomogeneousTransformationPosition3RotationQuaternionD transformation;
   kindr_ros::convertFromRosGeometryMsg(geometryTransformMsg, transformation);
 
-  kindr::expectNear(transformation.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4,
-                     KINDR_SOURCE_FILE_POS);
+  kindr::expectNear(transformation.getPosition().toImplementation(), referenceTranslation.toImplementation(), 1e-4, KINDR_SOURCE_FILE_POS);
   EXPECT_TRUE(transformation.getRotation().isNear(referenceQuaternion, 1e-8));
 }
 
-TEST(RosGeometryMsgTransformationEigen, convertToRosGeometryMsg)
-{
+TEST(RosGeometryMsgTransformationEigen, convertToRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.3, -1.1345, -0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.212, 0.0421, -0.958, 0.1885);
 

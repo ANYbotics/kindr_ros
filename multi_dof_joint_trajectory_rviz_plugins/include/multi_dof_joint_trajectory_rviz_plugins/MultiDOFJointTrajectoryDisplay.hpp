@@ -9,41 +9,38 @@
 #include <trajectory_msgs/MultiDOFJointTrajectory.h>
 #endif
 
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
 
 #include <tf/transform_listener.h>
 
-#include <rviz/visualization_manager.h>
-#include <rviz/properties/bool_property.h>
-#include <rviz/properties/int_property.h>
-#include <rviz/properties/float_property.h>
-#include <rviz/properties/color_property.h>
-#include <rviz/properties/parse_color.h>
 #include <rviz/frame_manager.h>
+#include <rviz/properties/bool_property.h>
+#include <rviz/properties/color_property.h>
+#include <rviz/properties/float_property.h>
+#include <rviz/properties/int_property.h>
+#include <rviz/properties/parse_color.h>
+#include <rviz/visualization_manager.h>
 
 #include "multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointConnectionVisual.hpp"
 #include "multi_dof_joint_trajectory_rviz_plugins/MultiDOFJointTrajectoryPointVisual.hpp"
 
-
 namespace multi_dof_joint_trajectory_rviz_plugins {
 
-class MultiDOFJointTrajectoryDisplay: public rviz::MessageFilterDisplay<trajectory_msgs::MultiDOFJointTrajectory>
-{
-Q_OBJECT
-public:
+class MultiDOFJointTrajectoryDisplay : public rviz::MessageFilterDisplay<trajectory_msgs::MultiDOFJointTrajectory> {
+  Q_OBJECT
+ public:
   MultiDOFJointTrajectoryDisplay();
   virtual ~MultiDOFJointTrajectoryDisplay();
 
-
-protected:
+ protected:
   virtual void onInitialize();
   virtual void reset();
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void updateTrajectorySignal();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void setShowConnection();
   void setShowTransformRotation();
   void setShowVelocityLinear();
@@ -72,7 +69,7 @@ private Q_SLOTS:
 
   void updateTrajectory();
 
-private:
+ private:
   void processMessage(const trajectory_msgs::MultiDOFJointTrajectory::ConstPtr& msg);
 
   void updateShowConnection();
@@ -156,4 +153,4 @@ private:
   trajectory_msgs::MultiDOFJointTrajectory::ConstPtr current_trajectory_;
 };
 
-} // multi_dof_joint_trajectory_rviz_plugins
+}  // namespace multi_dof_joint_trajectory_rviz_plugins

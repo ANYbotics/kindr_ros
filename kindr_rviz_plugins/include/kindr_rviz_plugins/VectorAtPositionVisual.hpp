@@ -6,18 +6,16 @@
 // kindr ros
 #include <kindr_msgs/VectorAtPosition.h>
 
-
 namespace Ogre {
 class Vector3;
 class Quaternion;
-} // Ogre
+}  // namespace Ogre
 
 namespace rviz {
 class Arrow;
 class BillboardLine;
 class MovableText;
-} // rviz
-
+}  // namespace rviz
 
 namespace kindr_rviz_plugins {
 
@@ -27,9 +25,8 @@ namespace kindr_rviz_plugins {
 // sensor_msgs::VectorAtPosition message. Currently it just shows an arrow with
 // the direction and magnitude of the acceleration vector, but could
 // easily be expanded to include more of the message data.
-class VectorAtPositionVisual
-{
-public:
+class VectorAtPositionVisual {
+ public:
   // Constructor. Creates the visual stuff and puts it into the
   // scene, but in an unconfigured state.
   VectorAtPositionVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node);
@@ -60,7 +57,7 @@ public:
   // parameters and therefore don't come from the VectorAtPosition message.
   void setColor(const Ogre::ColourValue& color);
 
-protected:
+ protected:
   // The object implementing the actual arrow shape
   boost::shared_ptr<rviz::Arrow> arrow_;
   boost::shared_ptr<rviz::Arrow> circleArrow_;
@@ -108,4 +105,4 @@ protected:
   void updateText();
 };
 
-} // kindr_rviz_plugins
+}  // namespace kindr_rviz_plugins

@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #include <iostream>
 
@@ -32,17 +32,14 @@
 
 #include <gtest/gtest.h>
 
-#include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
-#include "kindr/phys_quant/PhysicalQuantities.hpp"
 #include "kindr/common/gtest_eigen.hpp"
+#include "kindr/phys_quant/PhysicalQuantities.hpp"
+#include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
 
 // ROS
 #include <geometry_msgs/Pose.h>
 
-
-
-TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
-{
+TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg) {
   const kindr::VectorTypeless3D referenceVector(-9.12, -25.5, 0.6);
 
   geometry_msgs::Vector3 geometryVector3Msg;
@@ -56,8 +53,7 @@ TEST(RosGeometryMsgVectorEigen, convertFromRosGeometryMsg)
   kindr::expectNear(vector.toImplementation(), referenceVector.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
-TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg)
-{
+TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg) {
   const kindr::VectorTypeless3D referenceVector(0.3, -1.1, -0.6);
 
   kindr::VectorTypeless3D vector(referenceVector);
@@ -70,8 +66,7 @@ TEST(RosGeometryMsgVectorEigen, convertToRosGeometryMsg)
   EXPECT_NEAR(geometryVectorMsg.z, referenceVector.z(), 1e-8);
 }
 
-TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg)
-{
+TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg) {
   const kindr::Position3F referenceTranslation(-9.3, 2.5, 5.6);
 
   geometry_msgs::Point32 geometryPointMsg;
@@ -85,8 +80,7 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPoint32Msg)
   kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
-TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg)
-{
+TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg) {
   const kindr::Position3F referenceTranslation(0.3, -1.1, -0.6);
 
   kindr::Position3F position(referenceTranslation);
@@ -99,8 +93,7 @@ TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPoint32Msg)
   EXPECT_NEAR(geometryPointMsg.z, referenceTranslation.z(), 1e-8);
 }
 
-TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg)
-{
+TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg) {
   const kindr::Position3D referenceTranslation(19.3, -2.5, 5.6);
 
   geometry_msgs::Point geometryPointMsg;
@@ -114,8 +107,7 @@ TEST(RosGeometryMsgPositionEigen, convertFromRosGeometryPointMsg)
   kindr::expectNear(position.toImplementation(), referenceTranslation.toImplementation(), 1e-8, KINDR_SOURCE_FILE_POS);
 }
 
-TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPointMsg)
-{
+TEST(RosGeometryMsgPositionEigen, convertToRosGeometryPointMsg) {
   const kindr::Position3D referenceTranslation(0.3, -1.1, -0.6);
 
   kindr::Position3D position(referenceTranslation);

@@ -14,17 +14,15 @@
 #include <OGRE/OgreColourValue.h>
 #endif
 
-
 namespace Ogre {
 class SceneNode;
-} // Ogre
+}  // namespace Ogre
 
 namespace rviz {
 class ColorProperty;
 class FloatProperty;
 class IntProperty;
-} // rviz
-
+}  // namespace rviz
 
 // All the source in this plugin is in its own namespace. This is not
 // required but is good practice.
@@ -48,10 +46,9 @@ class VectorAtPositionVisual;
 // themselves are represented by a separate class, VectorAtPositionVisual. The
 // idiom for the visuals is that when the objects exist, they appear
 // in the scene, and when they are deleted, they disappear.
-class VectorAtPositionDisplay: public rviz::MessageFilterDisplay<kindr_msgs::VectorAtPosition>
-{
-Q_OBJECT
-public:
+class VectorAtPositionDisplay : public rviz::MessageFilterDisplay<kindr_msgs::VectorAtPosition> {
+  Q_OBJECT
+ public:
   // Constructor. pluginlib::ClassLoader creates instances by calling
   // the default constructor, so make sure you have one.
   VectorAtPositionDisplay();
@@ -62,17 +59,17 @@ public:
   // subscribed to incoming data and should not show anything in the
   // 3D view. These functions are where these connections are made
   // and broken.
-protected:
+ protected:
   virtual void onInitialize();
 
   // A helper to clear this display back to the initial state.
   virtual void reset();
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void updateVectorAtPositionSignal();
 
   // These Qt slots get connected to signals indicating changes in the user-editable properties.
-private Q_SLOTS:
+ private Q_SLOTS:
   void updateScale();
   void updateShowText();
   void updateColorAndAlpha();
@@ -81,7 +78,7 @@ private Q_SLOTS:
   void updateVectorAtPosition();
 
   // Function to handle an incoming ROS message.
-private:
+ private:
   void processMessage(const kindr_msgs::VectorAtPosition::ConstPtr& msg);
 
   // Storage for the list of visuals. It is a circular buffer where
@@ -106,4 +103,4 @@ private:
   kindr_msgs::VectorAtPosition::ConstPtr current_vector_at_position_;
 };
 
-} // kindr_rviz_plugins
+}  // namespace kindr_rviz_plugins

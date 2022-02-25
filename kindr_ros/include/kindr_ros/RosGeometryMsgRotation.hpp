@@ -24,10 +24,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-*/
+ */
 
 #pragma once
-
 
 // kindr
 #include <kindr/Core>
@@ -35,30 +34,22 @@
 // ros
 #include <geometry_msgs/Quaternion.h>
 
-
 namespace kindr_ros {
 
-
-template<typename PrimType_>
-inline static void convertFromRosGeometryMsg(
-    const geometry_msgs::Quaternion& geometryQuaternionMsg,
-    kindr::RotationQuaternion<PrimType_>& rotationQuaternion)
-{
-  rotationQuaternion.setValues(static_cast<PrimType_>(geometryQuaternionMsg.w),
-                               static_cast<PrimType_>(geometryQuaternionMsg.x),
-                               static_cast<PrimType_>(geometryQuaternionMsg.y),
-                               static_cast<PrimType_>(geometryQuaternionMsg.z));
+template <typename PrimType_>
+inline static void convertFromRosGeometryMsg(const geometry_msgs::Quaternion& geometryQuaternionMsg,
+                                             kindr::RotationQuaternion<PrimType_>& rotationQuaternion) {
+  rotationQuaternion.setValues(static_cast<PrimType_>(geometryQuaternionMsg.w), static_cast<PrimType_>(geometryQuaternionMsg.x),
+                               static_cast<PrimType_>(geometryQuaternionMsg.y), static_cast<PrimType_>(geometryQuaternionMsg.z));
 }
 
-template<typename PrimType_>
-inline static void convertToRosGeometryMsg(
-    const kindr::RotationQuaternion<PrimType_>& rotationQuaternion,
-    geometry_msgs::Quaternion& geometryQuaternionMsg)
-{
+template <typename PrimType_>
+inline static void convertToRosGeometryMsg(const kindr::RotationQuaternion<PrimType_>& rotationQuaternion,
+                                           geometry_msgs::Quaternion& geometryQuaternionMsg) {
   geometryQuaternionMsg.w = static_cast<double>(rotationQuaternion.w());
   geometryQuaternionMsg.x = static_cast<double>(rotationQuaternion.x());
   geometryQuaternionMsg.y = static_cast<double>(rotationQuaternion.y());
   geometryQuaternionMsg.z = static_cast<double>(rotationQuaternion.z());
 }
 
-} // namespace kindr_ros
+}  // namespace kindr_ros
