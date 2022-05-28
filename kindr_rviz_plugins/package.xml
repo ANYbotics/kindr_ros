@@ -3,7 +3,7 @@
 <package format="2">
 
   <name>kindr_rviz_plugins</name>
-  <version>0.3.5</version>
+  <version>0.3.6</version>
   <description>Plugins for visualizing kindr objects in rviz.</description>
 
   <author email="rdiethelm@anybotics.com">Remo Diethelm</author>
