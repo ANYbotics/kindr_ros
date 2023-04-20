@@ -113,7 +113,6 @@ if(CATKIN_ENABLE_TESTING)
   target_include_directories(test_${PROJECT_NAME} SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
-    ${kindr_INCLUDE_DIRS}
   )
   target_link_libraries(test_${PROJECT_NAME}
     ${PROJECT_NAME}
