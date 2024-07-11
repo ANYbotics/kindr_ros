@@ -12,7 +12,7 @@ uint8 TYPE_ANGULAR_VELOCITY=14
 uint8 TYPE_TORQUE=16
 uint8 TYPE_ANGULAR_MOMEMTUM=17
 
-Header header
+std_msgs/Header header
 uint8 type
 string name
 geometry_msgs/Vector3 vector # Frame defined in header
