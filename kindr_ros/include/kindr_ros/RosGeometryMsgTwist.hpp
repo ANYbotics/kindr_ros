@@ -32,7 +32,11 @@
 #include <kindr/Core>
 
 // ros
+#ifndef ROS2_BUILD
 #include <geometry_msgs/Twist.h>
+#else /* ROS2_BUILD */
+#include <geometry_msgs/msg/twist.hpp>
+#endif /* ROS2_BUILD */
 
 // kindr ros
 #include "kindr_ros/RosGeometryMsgPhysicalQuantities.hpp"
@@ -40,7 +44,11 @@
 namespace kindr_ros {
 
 template <typename PrimType_, typename PositionDiff_, typename RotationDiff_>
+#ifndef ROS2_BUILD
 inline static void convertFromRosGeometryMsg(const geometry_msgs::Twist& geometryTwistMsg,
+#else  /* ROS2_BUILD */
+inline static void convertFromRosGeometryMsg(const geometry_msgs::msg::Twist& geometryTwistMsg,
+#endif /* ROS2_BUILD */
                                              kindr::Twist<PrimType_, PositionDiff_, RotationDiff_>& twist) {
   convertFromRosGeometryMsg(geometryTwistMsg.linear, twist.getTranslationalVelocity());
   convertFromRosGeometryMsg(geometryTwistMsg.angular, twist.getRotationalVelocity());
@@ -48,7 +56,11 @@ inline static void convertFromRosGeometryMsg(const geometry_msgs::Twist& geometr
 
 template <typename PrimType_, typename PositionDiff_, typename RotationDiff_>
 inline static void convertToRosGeometryMsg(const kindr::Twist<PrimType_, PositionDiff_, RotationDiff_>& twist,
+#ifndef ROS2_BUILD
                                            geometry_msgs::Twist& geometryTwistMsg) {
+#else  /* ROS2_BUILD */
+                                           geometry_msgs::msg::Twist& geometryTwistMsg) {
+#endif /* ROS2_BUILD */
   convertToRosGeometryMsg(twist.getTranslationalVelocity(), geometryTwistMsg.linear);
   convertToRosGeometryMsg(twist.getRotationalVelocity(), geometryTwistMsg.angular);
 }

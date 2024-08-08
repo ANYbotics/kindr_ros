@@ -37,12 +37,20 @@
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 
 // ROS
+#ifndef ROS2_BUILD
 #include <geometry_msgs/Quaternion.h>
+#else /* ROS2_BUILD */
+#include <geometry_msgs/msg/quaternion.hpp>
+#endif /* ROS2_BUILD */
 
 TEST(RosGeometryMsgRotationQuaternionEigen, convertFromRosGeometryMsg) {
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
+#ifndef ROS2_BUILD
   geometry_msgs::Quaternion geometryQuaternionMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Quaternion geometryQuaternionMsg;
+#endif /* ROS2_BUILD */
   geometryQuaternionMsg.x = referenceQuaternion.x();
   geometryQuaternionMsg.y = referenceQuaternion.y();
   geometryQuaternionMsg.z = referenceQuaternion.z();
@@ -59,7 +67,11 @@ TEST(RosGeometryMsgRotationQuaternionEigen, convertToRosGeometryMsg) {
 
   kindr::RotationQuaternionPD rotationQuaternion(referenceQuaternion);
 
+#ifndef ROS2_BUILD
   geometry_msgs::Quaternion geometryQuaternionMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Quaternion geometryQuaternionMsg;
+#endif /* ROS2_BUILD */
   kindr_ros::convertToRosGeometryMsg(rotationQuaternion, geometryQuaternionMsg);
 
   EXPECT_NEAR(geometryQuaternionMsg.x, referenceQuaternion.x(), 1e-8);

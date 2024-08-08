@@ -37,13 +37,21 @@
 #include "kindr_ros/RosGeometryMsgPose.hpp"
 
 // ROS
+#ifndef ROS2_BUILD
 #include <geometry_msgs/Pose.h>
+#else /* ROS2_BUILD */
+#include <geometry_msgs/msg/pose.hpp>
+#endif /* ROS2_BUILD */
 
 TEST(RosGeometryMsgPoseEigen, convertFromRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.3, -1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.113, 0.071, -0.924, 0.35835);
 
+#ifndef ROS2_BUILD
   geometry_msgs::Pose geometryPoseMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Pose geometryPoseMsg;
+#endif /* ROS2_BUILD */
   geometryPoseMsg.orientation.x = referenceQuaternion.x();
   geometryPoseMsg.orientation.y = referenceQuaternion.y();
   geometryPoseMsg.orientation.z = referenceQuaternion.z();
@@ -67,7 +75,11 @@ TEST(RosGeometryMsgPoseEigen, convertToRosGeometryMsg) {
   pose.getPosition() = referenceTranslation;
   pose.getRotation() = referenceQuaternion;
 
+#ifndef ROS2_BUILD
   geometry_msgs::Pose geometryPoseMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Pose geometryPoseMsg;
+#endif /* ROS2_BUILD */
   kindr_ros::convertToRosGeometryMsg(pose, geometryPoseMsg);
 
   EXPECT_NEAR(geometryPoseMsg.orientation.x, referenceQuaternion.x(), 1e-8);
@@ -83,7 +95,11 @@ TEST(RosGeometryMsgTransformationEigen, convertFromRosGeometryMsg) {
   const kindr::Position3D referenceTranslation(0.12, 1.5, 0.6);
   const kindr::RotationQuaternionPD referenceQuaternion(0.949, 0.133, 0.169, 0.230541);
 
+#ifndef ROS2_BUILD
   geometry_msgs::Transform geometryTransformMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Transform geometryTransformMsg;
+#endif /* ROS2_BUILD */
   geometryTransformMsg.rotation.x = referenceQuaternion.x();
   geometryTransformMsg.rotation.y = referenceQuaternion.y();
   geometryTransformMsg.rotation.z = referenceQuaternion.z();
@@ -107,7 +123,11 @@ TEST(RosGeometryMsgTransformationEigen, convertToRosGeometryMsg) {
   transformation.getPosition() = referenceTranslation;
   transformation.getRotation() = referenceQuaternion;
 
+#ifndef ROS2_BUILD
   geometry_msgs::Transform geometryTransformMsg;
+#else  /* ROS2_BUILD */
+  geometry_msgs::msg::Transform geometryTransformMsg;
+#endif /* ROS2_BUILD */
   kindr_ros::convertToRosGeometryMsg(transformation, geometryTransformMsg);
 
   EXPECT_NEAR(geometryTransformMsg.rotation.x, referenceQuaternion.x(), 1e-8);
