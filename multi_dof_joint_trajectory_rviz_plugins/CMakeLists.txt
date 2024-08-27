@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.16.3)
 project(multi_dof_joint_trajectory_rviz_plugins)
 
 set(CMAKE_CXX_STANDARD 17)
