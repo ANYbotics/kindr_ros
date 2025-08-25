@@ -38,4 +38,8 @@
 #include "kindr_ros/RosGeometryMsgPose.hpp"
 #include "kindr_ros/RosGeometryMsgRotation.hpp"
 #include "kindr_ros/RosGeometryMsgTwist.hpp"
+#ifndef ROS2_BUILD
 #include "kindr_ros/RosTfPose.hpp"
+#else /* ROS2_BUILD */
+#include "kindr_ros/RosTf2Pose.hpp"
+#endif /* ROS2_BUILD */
