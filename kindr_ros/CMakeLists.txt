@@ -95,6 +95,7 @@ endforeach()
 ###########
 
 add_library(${PROJECT_NAME} INTERFACE)
+target_compile_definitions(${PROJECT_NAME} INTERFACE -DROS2_BUILD)
 target_include_directories(${PROJECT_NAME}
   INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
