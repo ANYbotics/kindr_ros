@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.28)
 project(kindr_ros)
 
 if("$ENV{ROS_VERSION}" STREQUAL "1")
