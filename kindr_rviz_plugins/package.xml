@@ -7,8 +7,7 @@
   <description>Plugins for visualizing kindr objects in rviz.</description>
 
   <author email="rdiethelm@anybotics.com">Remo Diethelm</author>
-  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
-  <maintainer email="pleemann@anybotics.com">Philipp Leemann</maintainer>
+  <maintainer email="support@anybotics.com">ANYbotics</maintainer>
 
   <license>BSD</license>
 

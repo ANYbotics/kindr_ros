@@ -7,8 +7,7 @@
   <description>Plugins for visualizing trajectory_msgs/MultiDOFJointTrajectory in rviz.</description>
 
   <author email="rdiethelm@anybotics.com">Remo Diethelm</author>
-  <maintainer email="rdiethelm@anybotics.com">Remo Diethelm</maintainer>
-  <maintainer email="sbachmann@anybotics.com">Samuel Bachmann</maintainer>
+  <maintainer email="support@anybotics.com">ANYbotics</maintainer>
 
   <license>BSD</license>
 
